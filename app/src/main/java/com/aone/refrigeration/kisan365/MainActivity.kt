@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
                                                             })
                                             }
                                                     addText("KISAN 365 POWER MONITOR", 23f)
-                                                            addText("Commercial Edition • AONE REFRIGERATION", 14f)
+                                       addText("Commercial Edition • AONE REFRIGERATION", 14f)
                                                                     motorStatus = TextView(this).apply { text = "MOTOR STATUS: OFF"; textSize = 22f; setPadding(0, 12, 0, 12) }
                                                                             root.addView(motorStatus)
                                                                                     root.addView(Button(this).apply {

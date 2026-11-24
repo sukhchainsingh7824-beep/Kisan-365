@@ -1,1 +1,18 @@
 
+plugins {
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
+}
+
+android {
+    namespace = "com.aone.kisan365"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.aone.kisan365"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0"
+    }
+}

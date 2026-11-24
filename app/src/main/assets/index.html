@@ -146,9 +146,9 @@ main{padding:10px 12px 18px}
  <div class="head"><h2>▦ Device Scan & Login</h2><span class="sub">Connect your KISAN 365 device</span></div>
  <div class="panel">
   <h3>1. Scan Device QR Code</h3>
-  <p class="sub">ਕੈਮਰੇ ਨਾਲ ਡਿਵਾਈਸ ਦਾ QR ਸਕੈਨ ਕਰੋ ਜਾਂ activation code ਹੱਥੀਂ ਭਰੋ।</p>
+
   <video id="deviceQrVideo" playsinline style="display:none;width:100%;max-height:250px;background:#10271a;border-radius:12px"></video>
-  <div id="qrScanStatus" class="note">Camera scan ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਹੇਠਾਂ ਬਟਨ ਦਬਾਓ।</div>
+  <div id="qrScanStatus" class="note">Select Start QR Scan to use the camera.</div>
   <div style="display:flex;gap:8px">
    <button class="primary" style="flex:1" id="startQrScan" onclick="scanDevice()">START QR SCAN</button>
    <button class="secondary" style="flex:1" id="stopQrScan" onclick="stopDeviceScan()">STOP CAMERA</button>
@@ -158,11 +158,11 @@ main{padding:10px 12px 18px}
   <label class="field"><span>Customer mobile / account ID</span><input id="deviceCustomer" placeholder="Customer account"></label>
   <label class="field"><span>Assign motor</span><select id="assignMotor"><option>Motor 01</option></select></label>
   <button class="primary" onclick="activateDevice()">LOGIN / LINK DEVICE</button>
-  <p class="note">Preview only: ਅਸਲੀ activation ਲਈ backend ਵੱਲੋਂ signed one-time code verify ਹੋਣਾ ਲਾਜ਼ਮੀ ਹੈ। QR scan ਹੋਣਾ ਆਪਣੇ ਆਪ ownership ਜਾਂ device activation ਨਹੀਂ ਕਰਦਾ।</p>
+
  </div>
  <div class="panel">
   <h3>Device Linking Status</h3>
-  <div id="deviceLinkStatus" class="sub">ਕੋਈ ਨਵਾਂ ਡਿਵਾਈਸ ਇਸ preview ਵਿੱਚ link ਨਹੀਂ ਕੀਤਾ ਗਿਆ।</div>
+  <div id="deviceLinkStatus" class="sub">No device linked.</div>
  </div>
  <button class="secondary" style="width:100%" onclick="showPage('settings')">← BACK TO SETTINGS</button>
 </section>
@@ -170,7 +170,7 @@ main{padding:10px 12px 18px}
  <div class="head"><h2>🔒 Firebase Setup</h2><span class="sub">Password protected · Setup only</span></div>
  <div class="panel"><h3>1. Firebase Connection & google-services.json</h3>
   <label class="field"><span>Android google-services.json file</span><input type="file" id="googleServicesFile" accept=".json,application/json"></label>
-  <div id="googleServicesInfo" class="note">ਹਾਲੇ ਕੋਈ google-services.json ਫਾਈਲ ਨਹੀਂ ਚੁਣੀ। ਇਹ preview ਵਿੱਚ ਸਿਰਫ਼ ਪੜ੍ਹੀ ਜਾਵੇਗੀ; Firebase ਨਾਲ ਹੁਣੇ ਕਨੈਕਟ ਨਹੀਂ ਹੋਵੇਗੀ।</div>
+  <div id="googleServicesInfo" class="note">No file selected.</div>
   <label class="field"><span>Firebase Project ID</span><input id="fbProject" placeholder="your-project-id"></label>
   <label class="field"><span>Web API Key</span><input id="fbApi" placeholder="AIza..." autocomplete="off"></label>
   <label class="field"><span>Auth Domain</span><input id="fbAuth" placeholder="project.firebaseapp.com"></label>
@@ -195,12 +195,12 @@ main{padding:10px 12px 18px}
  <div class="panel"><h3>3. FCM Push Notifications</h3>
   <label class="field"><span>Push notifications</span><select id="fcmEnabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
   <label class="field"><span>Web Push VAPID public key (web only)</span><input id="fcmVapid" placeholder="Public VAPID key, if using web push"></label>
-  <label class="field"><span>FCM Registration Token (Firebase app ਤੋਂ ਮਿਲਿਆ token ਇੱਥੇ paste ਕਰੋ)</span><textarea id="fcmToken" rows="4" placeholder="FCM registration token ਇੱਥੇ paste ਕਰੋ"></textarea></label>
+  <label class="field"><span>FCM Registration Token</span><textarea id="fcmToken" rows="4" placeholder="Paste FCM token"></textarea></label>
   <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:-4px">
    <button type="button" class="secondary" id="copyFcmToken">COPY FCM TOKEN</button>
    <button type="button" class="secondary" id="clearFcmToken">CLEAR TOKEN</button>
   </div>
-  <p class="note" id="fcmTokenStatus">Token ਇਸ browser ਦੇ local storage ਵਿੱਚ save ਹੋਵੇਗਾ। ਅਸਲੀ FCM token Firebase SDK ਐਪ ਰਜਿਸਟਰ ਹੋਣ ਤੋਂ ਬਾਅਦ ਬਣਾਉਂਦਾ ਹੈ; ਇਹ HTML ਆਪਣੇ ਆਪ token generate ਨਹੀਂ ਕਰ ਸਕਦੀ।</p>
+  <p class="note" id="fcmTokenStatus"></p>
   <label class="field"><span>Power ON title</span><input id="fcmOnTitle" value="KISAN 365 - Power ON"></label>
   <label class="field"><span>Power ON message</span><input id="fcmOnMessage" value="Electricity supply is now available."></label>
   <label class="field"><span>Power OFF title</span><input id="fcmOffTitle" value="KISAN 365 - Power OFF"></label>
@@ -241,7 +241,7 @@ function readPowerEvents(){try{return JSON.parse(localStorage.getItem(POWER_EVEN
 function todayBounds(){const d=new Date();d.setHours(0,0,0,0);return d.getTime()}
 function powerIntervals(now){const events=readPowerEvents().sort((a,b)=>a.at-b.at),start=todayBounds();let state=null,cursor=start,arr=[];for(const e of events){if(e.at<start){state=e.state;continue}if(e.at>now)break;if(state==='ON'&&e.at>cursor)arr.push([cursor,e.at]);cursor=e.at;state=e.state}if(state==='ON'&&now>cursor)arr.push([cursor,now]);return arr}
 function fmtPowerDuration(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/3600)+'h '+Math.floor(sec%3600/60)+'m'}
-function renderDailyPower(){const track=document.getElementById('lightTrack');if(!track)return;const now=Date.now(),start=todayBounds(),arr=powerIntervals(now);let on=0;arr.forEach(x=>on+=Math.max(0,x[1]-x[0])/1000);track.innerHTML='';for(let h=0;h<24;h++){const a=start+h*3600000,b=a+3600000;let sec=0;arr.forEach(x=>sec+=Math.max(0,Math.min(x[1],b)-Math.max(x[0],a))/1000);const d=document.createElement('div');d.className='light-hour';const i=document.createElement('i');i.style.width=Math.min(100,sec/3600*100)+'%';d.appendChild(i);d.title=String(h).padStart(2,'0')+':00 · '+Math.round(sec/60)+' min ON';track.appendChild(d)}document.getElementById('lightDate').textContent=new Date().toLocaleDateString();document.getElementById('todayOnTime').textContent=fmtPowerDuration(on);document.getElementById('todayOffTime').textContent=fmtPowerDuration(Math.max(0,Math.min(now,start+86400000)-start)/1000-on);const todays=readPowerEvents().filter(e=>e.at>=start&&e.at<start+86400000).sort((a,b)=>b.at-a.at);document.getElementById('eventCount').textContent=todays.length+' entries';const list=document.getElementById('powerEventList');list.innerHTML='';if(!todays.length){list.textContent='ਅੱਜ ਹਾਲੇ ਕੋਈ Power ON/OFF event ਨਹੀਂ ਮਿਲਿਆ।';return}todays.forEach(e=>{const row=document.createElement('div');row.className='power-event '+(e.state==='ON'?'on':'off');const b=document.createElement('b');b.textContent=e.state==='ON'?'POWER ON':'POWER OFF';const t=document.createElement('span');t.textContent=new Date(e.at).toLocaleString();row.append(b,t);list.appendChild(row)})}
+function renderDailyPower(){const track=document.getElementById('lightTrack');if(!track)return;const now=Date.now(),start=todayBounds(),arr=powerIntervals(now);let on=0;arr.forEach(x=>on+=Math.max(0,x[1]-x[0])/1000);track.innerHTML='';for(let h=0;h<24;h++){const a=start+h*3600000,b=a+3600000;let sec=0;arr.forEach(x=>sec+=Math.max(0,Math.min(x[1],b)-Math.max(x[0],a))/1000);const d=document.createElement('div');d.className='light-hour';const i=document.createElement('i');i.style.width=Math.min(100,sec/3600*100)+'%';d.appendChild(i);d.title=String(h).padStart(2,'0')+':00 · '+Math.round(sec/60)+' min ON';track.appendChild(d)}document.getElementById('lightDate').textContent=new Date().toLocaleDateString();document.getElementById('todayOnTime').textContent=fmtPowerDuration(on);document.getElementById('todayOffTime').textContent=fmtPowerDuration(Math.max(0,Math.min(now,start+86400000)-start)/1000-on);const todays=readPowerEvents().filter(e=>e.at>=start&&e.at<start+86400000).sort((a,b)=>b.at-a.at);document.getElementById('eventCount').textContent=todays.length+' entries';const list=document.getElementById('powerEventList');list.innerHTML='';if(!todays.length){list.textContent='No power events recorded today.';return}todays.forEach(e=>{const row=document.createElement('div');row.className='power-event '+(e.state==='ON'?'on':'off');const b=document.createElement('b');b.textContent=e.state==='ON'?'POWER ON':'POWER OFF';const t=document.createElement('span');t.textContent=new Date(e.at).toLocaleString();row.append(b,t);list.appendChild(row)})}
 function recordSupplyEvent(on){const events=readPowerEvents(),state=on?'ON':'OFF';if(events.length&&events[events.length-1].state===state)return;events.push({at:Date.now(),state});localStorage.setItem(POWER_EVENTS_KEY,JSON.stringify(events.slice(-2000)));renderDailyPower()}
 function playPowerPreview(kind){let s={};try{s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}const mode=kind==='ON'?(s.on||'default'):(s.off||'default');if(mode==='silent')return;if(s.custom){new Audio(s.custom).play().catch(()=>{});return}try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);const seq=mode==='siren'?[650,900,650,900]:mode==='classic'?[880,660,880]:mode==='bell'?[1046,1318]:[740,880];let t=ctx.currentTime;seq.forEach(v=>{o.frequency.setValueAtTime(v,t);g.gain.setValueAtTime(.16,t);g.gain.setValueAtTime(0,t+.18);t+=.24});o.start();o.stop(t+.02);o.onended=()=>ctx.close()}catch(e){}}
 function loadPowerSoundPrefs(){try{const s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}');if(s.on)document.getElementById('powerOnSound').value=s.on;if(s.off)document.getElementById('powerOffSound').value=s.off}catch(e){}}
@@ -255,7 +255,7 @@ function showPage(id){if(id==='admin'&&!sessionStorage.getItem('k365_admin_ok'))
 ;pages.forEach(p=>p.classList.toggle('active',p.id===id));navs.forEach(n=>n.classList.toggle('active',n.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});}
 document.getElementById('googleServicesFile').addEventListener('change',async function(){
  const file=this.files&&this.files[0];const out=document.getElementById('googleServicesInfo');
- if(!file){out.textContent='ਹਾਲੇ ਕੋਈ ਫਾਈਲ ਨਹੀਂ ਚੁਣੀ।';return;}
+ if(!file){out.textContent='No file selected.';return;}
  try{
   const cfg=JSON.parse(await file.text());
   const client=cfg.client&&cfg.client[0]||{};
@@ -270,7 +270,7 @@ document.getElementById('googleServicesFile').addEventListener('change',async fu
   ];
   out.textContent=details.join(' · ');
   localStorage.setItem('k365_google_services_preview',JSON.stringify({fileName:file.name,projectId:cfg.project_info?.project_id||'',projectNumber:cfg.project_info?.project_number||'',appId:info.mobilesdk_app_id||'',packageName:android.package_name||''}));
- }catch(err){out.textContent='ਇਹ valid google-services.json ਫਾਈਲ ਨਹੀਂ ਲੱਗਦੀ।';}
+ }catch(err){out.textContent='Invalid google-services.json file.';}
 })
 navs.forEach(n=>n.addEventListener('click',()=>showPage(n.dataset.page)));
 let timerEnd=0,timerInterval=null;
@@ -335,7 +335,7 @@ function loadAdminConfig(){
 }
 document.getElementById('saveFirebase').onclick=()=>{saveAdminConfig();alert('Firebase settings saved.');};
 document.getElementById('saveAuth').onclick=()=>{saveAdminConfig();alert('Authentication settings saved.');};
-document.getElementById('saveFcm').onclick=()=>{saveAdminConfig();document.getElementById('fcmTokenStatus').textContent='FCM settings ਅਤੇ token ਇਸ browser ਵਿੱਚ save ਹੋ ਗਏ। ਅਸਲੀ push delivery ਲਈ app/backend integration ਹਾਲੇ ਲੋੜੀਂਦੀ ਹੈ।';alert('FCM settings saved.');};
+document.getElementById('saveFcm').onclick=()=>{saveAdminConfig();document.getElementById('fcmTokenStatus').textContent='FCM settings saved.';alert('FCM settings saved.');};
 document.getElementById('copyFcmToken').onclick=async()=>{const token=document.getElementById('fcmToken').value.trim();if(!token){alert('Enter an FCM token first.');return;}try{await navigator.clipboard.writeText(token);document.getElementById('fcmTokenStatus').textContent='FCM token copied.';}catch(e){const field=document.getElementById('fcmToken');field.focus();field.select();alert('Token selected. Use Copy to copy it.');}};
 document.getElementById('clearFcmToken').onclick=()=>{document.getElementById('fcmToken').value='';document.getElementById('fcmTokenStatus').textContent='Token cleared. Save FCM Settings to apply.';};
 document.getElementById('testFcm').onclick=()=>alert('Settings are saved, but a real test notification requires deployed Firebase Cloud Messaging and a registered app token.');
@@ -379,7 +379,7 @@ function stopDeviceScan(){
  if(deviceScanStream){deviceScanStream.getTracks().forEach(t=>t.stop());deviceScanStream=null;}
  const video=document.getElementById('deviceQrVideo');if(video){video.pause();video.srcObject=null;video.style.display='none';}
 }
-function readQrImage(input){if(input.files&&input.files[0])document.getElementById('qrScanStatus').textContent='QR image ਚੁਣੀ ਗਈ। ਇਸ preview ਵਿੱਚ image QR decoding ਉਪਲਬਧ ਨਹੀਂ; camera scan ਜਾਂ code ਹੱਥੀਂ ਵਰਤੋ।';}
+function readQrImage(input){if(input.files&&input.files[0])document.getElementById('qrScanStatus').textContent='QR image selected. Use camera scan or enter the code manually.';}
 function activateDevice(){
  const code=document.getElementById('deviceCode').value.trim();
  const serial=document.getElementById('deviceSerial').value.trim();

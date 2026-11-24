@@ -2,66 +2,143 @@ package com.aone.kisan365
 
 import android.app.Activity
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import android.content.Intent
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.view.Gravity
-import android.view.ViewGroup
 import android.graphics.Color
 import android.graphics.Typeface
+import android.view.Gravity
+import android.widget.*
 
-class MainActivity : Activity() {
+class DashboardActivity : Activity() {
+
+    private lateinit var layout: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val layout = LinearLayout(this).apply {
+        val scroll = ScrollView(this)
+
+        layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setBackgroundColor(Color.rgb(12, 96, 52))
-            setPadding(20, 30, 20, 30)
+            setPadding(18, 20, 18, 20)
+            setBackgroundColor(Color.rgb(244, 247, 242))
         }
 
-        val logo = ImageView(this).apply {
-            setImageResource(R.drawable.kisan_splash)
-            scaleType = ImageView.ScaleType.FIT_CENTER
+        scroll.addView(layout)
+        setContentView(scroll)
+
+        addTitle("🌾 KISAN 365")
+        addText("SMART MOTOR & POWER MONITOR")
+        addText("DEVICE STATUS: NOT CONNECTED")
+        addText("POWER SUPPLY: WAITING FOR DEVICE")
+
+        addTitle("POWER DASHBOARD")
+
+        addInfo("Voltage: -- V")
+        addInfo("Current: -- A")
+        addInfo("Frequency: -- Hz")
+
+        addTitle("MOTOR CONTROL")
+
+        for (i in 1..7) {
+            addMotor(i)
         }
 
-        layout.addView(
-            logo,
-            LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                0,
-                1f
-            )
-        )
+        addTitle("SYSTEM STATUS")
+        addText("Firebase: Pending")
+        addText("FCM: Pending")
+        addText("Hardware: Not Connected")
+    }
+
+    private fun addTitle(value: String) {
+        val text = TextView(this).apply {
+            this.text = value
+            textSize = 22f
+            typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.rgb(20, 100, 50))
+            setPadding(0, 20, 0, 12)
+        }
+        layout.addView(text)
+    }
+
+    private fun addText(value: String) {
+        val text = TextView(this).apply {
+            this.text = value
+            textSize = 15f
+            setTextColor(Color.DKGRAY)
+            setPadding(4, 8, 4, 8)
+        }
+        layout.addView(text)
+    }
+
+    private fun addInfo(value: String) {
+        val card = createCard()
+        val text = TextView(this).apply {
+            this.text = value
+            textSize = 18f
+            setTextColor(Color.DKGRAY)
+            setPadding(8, 10, 8, 10)
+        }
+        card.addView(text)
+        layout.addView(card)
+    }
+
+    private fun addMotor(number: Int) {
+        val card = createCard()
 
         val title = TextView(this).apply {
-            text = "KISAN 365"
-            textSize = 30f
-            gravity = Gravity.CENTER
-            setTextColor(Color.WHITE)
+            text = "MOTOR %02d".format(number)
+            textSize = 19f
             typeface = Typeface.DEFAULT_BOLD
+            setTextColor(Color.rgb(20, 100, 50))
         }
-        layout.addView(title)
 
-        val loading = TextView(this).apply {
-            text = "SMART FARM POWER MONITOR\n\nConnecting..."
+        val status = TextView(this).apply {
+            text = "STATUS: OFF"
             textSize = 16f
-            gravity = Gravity.CENTER
-            setTextColor(Color.WHITE)
-            setPadding(10, 20, 10, 20)
+            setTextColor(Color.RED)
+            setPadding(0, 10, 0, 10)
         }
-        layout.addView(loading)
 
-        setContentView(layout)
+        val buttons = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER
+        }
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            startActivity(Intent(this, DashboardActivity::class.java))
-            finish()
-        }, 3000)
+        val on = Button(this).apply {
+            text = "MOTOR ON"
+            setOnClickListener {
+                status.text = "STATUS: ON (DEMO)"
+                status.setTextColor(Color.rgb(0, 140, 40))
+            }
+        }
+
+        val off = Button(this).apply {
+            text = "MOTOR OFF"
+            setOnClickListener {
+                status.text = "STATUS: OFF"
+                status.setTextColor(Color.RED)
+            }
+        }
+
+        buttons.addView(on, LinearLayout.LayoutParams(0, -2, 1f))
+        buttons.addView(off, LinearLayout.LayoutParams(0, -2, 1f))
+
+        card.addView(title)
+        card.addView(status)
+        card.addView(buttons)
+        layout.addView(card)
+    }
+
+    private fun createCard(): LinearLayout {
+        return LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(14, 14, 14, 14)
+            setBackgroundColor(Color.WHITE)
+
+            val params = LinearLayout.LayoutParams(
+                -1, -2
+            )
+            params.setMargins(0, 8, 0, 8)
+            layoutParams = params
+        }
     }
 }

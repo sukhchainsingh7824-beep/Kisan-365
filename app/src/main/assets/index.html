@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KISAN 365</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0c6034">
+<style>
+:root{--g:#16834a;--gd:#0d6035;--bg:#f2f7f3;--ink:#183629;--muted:#74847a;--line:#e2ebe5;--red:#d84c4c;--blue:#2878c8;--yellow:#c79a18}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--ink)}
+.app{max-width:440px;min-height:100vh;margin:auto;background:white;position:relative;padding-bottom:76px;box-shadow:0 0 25px #163c2810}
+header{background:linear-gradient(135deg,#0c6034,#1b9853);color:#fff;padding:15px 16px 13px;border-radius:0 0 22px 22px}
+.brand{display:flex;align-items:center;gap:10px}.logo{width:42px;height:42px;border-radius:13px;background:#ffffff24;display:grid;place-items:center;font-size:24px}.brand h1{font-size:18px;margin:0;letter-spacing:.6px}.brand small{display:block;font-size:9px;opacity:.85;margin-top:3px}.phone{margin-left:auto;color:#fff;text-decoration:none;border:1px solid #ffffff66;border-radius:18px;padding:7px 9px;font-size:10px}
+.devicebar{display:flex;align-items:center;justify-content:space-between;margin-top:13px;font-size:11px}.online{display:flex;align-items:center;gap:6px;font-weight:700}.lamp{width:9px;height:9px;border-radius:50%;background:#39e17c;box-shadow:0 0 0 3px #ffffff22}.online.offline .lamp{background:#ff6262}
+.timerstrip{margin-top:12px;border-radius:12px;background:#ffffff20;padding:9px 11px;display:flex;justify-content:space-between;align-items:center;font-size:11px}.timerstrip strong{font-size:17px;letter-spacing:1px}.timerstrip button{border:0;border-radius:8px;background:#fff;color:var(--gd);font-weight:700;padding:6px 10px}
+main{padding:14px}.page{display:none}.page.active{display:block}.head{display:flex;justify-content:space-between;align-items:center;margin:3px 1px 11px}.head h2{font-size:15px;margin:0}.sub{font-size:10px;color:var(--muted)}
+.motor{border:1px solid var(--line);border-radius:16px;padding:12px;margin-bottom:12px;background:#fff}.motorhead{display:flex;align-items:center;justify-content:space-between}.motorname{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}.gear{font-size:21px;display:inline-block;color:var(--g)}.running .gear{animation:spin 1.5s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+.state{font-size:9px;font-weight:700;padding:5px 8px;border-radius:20px;background:#e8f6ed;color:var(--g)}.state.off{background:#fff0f0;color:var(--red)}
+.phasegrid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:12px}.phase{background:#f7f9f8;border-radius:10px;padding:9px 6px;text-align:center}.phase b{font-size:10px;display:block}.phase strong{font-size:17px;display:block;margin:5px 0 2px}.phase small{font-size:9px;color:var(--muted)}.r b{color:var(--red)}.y b{color:var(--yellow)}.b b{color:var(--blue)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}.stat{background:#f8faf8;border-radius:9px;padding:8px 5px;text-align:center}.stat span{display:block;color:var(--muted);font-size:9px}.stat strong{font-size:13px;display:block;margin-top:4px}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px}.controls button,.primary{border:0;border-radius:10px;padding:11px;font-weight:700;font-size:12px}.onbtn{background:var(--g);color:#fff}.offbtn{background:#fff0f0;color:#bd3939}.smallrow{display:flex;justify-content:space-between;margin-top:9px;color:var(--muted);font-size:10px}
+#home .motorhead button{display:none!important}.addbtn{width:100%;border:1px dashed #8fbea1;background:#f4fbf6;color:var(--g);padding:12px;border-radius:12px;font-weight:700}
+.panel{border:1px solid var(--line);border-radius:14px;padding:13px;margin-bottom:11px}.panel h3{font-size:13px;margin:0 0 10px}.field{display:block;margin:9px 0}.field span{display:block;font-size:10px;color:var(--muted);margin-bottom:5px}.field input,.field select,.field textarea{width:100%;border:1px solid #dce7df;border-radius:9px;padding:10px;font-size:12px;background:#fff;color:var(--ink)}.primary{background:var(--g);color:white;width:100%;margin-top:7px}.secondary{border:1px solid var(--line);background:#f6f9f7;color:var(--ink);border-radius:9px;padding:10px;font-size:11px;font-weight:700}
+.note{font-size:9px;line-height:1.45;color:var(--muted);margin:9px 1px}
+.bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(440px,100%);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 3px calc(9px + env(safe-area-inset-bottom));z-index:5}.nav{color:#829087;text-align:center;font-size:9px;min-width:48px;border:0;background:none}.nav b{display:block;font-size:18px;margin-bottom:3px}.nav.active{color:var(--g);font-weight:700}
+@media(min-width:600px){body{padding:18px 0}.app{border-radius:22px;overflow:hidden;min-height:900px}.bottom{position:absolute;border-radius:0 0 22px 22px}}
+</style></head>
+<body><div class="app">
+<header>
+ <div class="brand"><div class="logo">🌾</div><div><h1>KISAN 365</h1><small>SMART MOTOR & POWER MONITOR</small></div><a class="phone" href="tel:+919803234408">☎ CONTACT</a></div>
+ <div class="devicebar">
+  <span class="online" id="onlineStatus"><i class="lamp"></i><span id="onlineText">DEVICE ONLINE</span></span>
+  <span class="online" id="supplyStatus"><i class="lamp"></i><span id="supplyText">POWER SUPPLY ON</span></span>
+ </div>
+ <div class="timerstrip"><span>ACTIVE TIMER</span><strong id="headerTimer">--:--:--</strong><button id="headerCancel">CANCEL</button></div>
+</header>
+<main>
+<section class="page active" id="home">
+ <div class="head"><h2>Power Dashboard</h2><span class="sub">Live motor & supply monitoring</span></div>
+ <div class="stats" style="margin-bottom:12px">
+  <div class="stat"><span>Device Status</span><strong id="dashDevice">ONLINE</strong></div>
+  <div class="stat"><span>Power Supply</span><strong id="dashSupply">ON</strong></div>
+  <div class="stat"><span>Total Motors</span><strong id="homeMotorCount">1</strong></div>
+ </div>
+ <div id="motorCards">
+  <article class="motor" data-motor="1">
+   <div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR 01 · MAIN PUMP</div><span class="state off">MOTOR OFF</span></div>
+   <div class="phasegrid">
+    <div class="phase r"><b>R PHASE</b><strong>231 V</strong><small>2.4 A</small></div>
+    <div class="phase y"><b>Y PHASE</b><strong>229 V</strong><small>2.3 A</small></div>
+    <div class="phase b"><b>B PHASE</b><strong>233 V</strong><small>2.5 A</small></div>
+   </div>
+   <div class="stats"><div class="stat"><span>Total Current</span><strong>2.4 A</strong></div><div class="stat"><span>Power</span><strong>1.55 kW</strong></div><div class="stat"><span>Frequency</span><strong>50 Hz</strong></div></div>
+   <div class="controls"><button class="onbtn" onclick="motorAction(this,true)">▶ MOTOR ON</button><button class="offbtn" onclick="motorAction(this,false)">■ MOTOR OFF</button></div>
+   <div class="smallrow"><span>Supply: Available</span><span>Power factor: 0.92</span></div>
+  </article>
+ </div>
+ <p class="note">Sample readings only. Actual readings and motor control require the connected controller and secure backend.</p>
+</section>
+<section class="page" id="timer">
+ <div class="head"><h2>Motor Timer</h2><span class="sub">Set once · visible on Home</span></div>
+ <div class="panel"><h3>Set Motor OFF Timer</h3>
+  <label class="field"><span>Select motor</span><select id="timerMotor"><option>Motor 01</option></select></label>
+  <label class="field"><span>Duration: <b id="durationLabel">1 hour</b></span><input type="range" min="5" max="720" step="5" value="60" id="duration"></label>
+  <div class="stats"><div class="stat"><span>Selected time</span><strong id="durationClock">01:00:00</strong></div><div class="stat"><span>Timer state</span><strong id="timerState">Not set</strong></div><div class="stat"><span>Expiry action</span><strong>MOTOR OFF</strong></div></div>
+  <button class="primary" id="startTimer">START TIMER</button><button class="secondary" style="width:100%;margin-top:8px" id="cancelTimer">CANCEL TIMER</button>
+  <p class="note">Demo only: actual automatic OFF needs server-side timer, connected controller and device acknowledgement.</p>
+ </div>
+</section>
+<section class="page" id="alerts">
+ <div class="head"><h2>Alerts</h2><span class="sub">Recent notifications</span></div>
+ <div class="panel"><h3>Power Supply ON</h3><div class="sub">Today · 06:15 AM · Electricity detected; motor was OFF</div></div>
+ <div class="panel"><h3>Motor OFF</h3><div class="sub">Today · 09:40 AM · Motor 01 stopped</div></div>
+ <div class="panel"><h3>Power Supply OFF</h3><div class="sub">Yesterday · 07:10 PM · Supply disconnected</div></div>
+</section>
+<section class="page" id="settings">
+ <div class="head"><h2>Settings</h2><span class="sub">Customer & device settings</span></div>
+ <div class="panel" id="motorManagement"><h3>Manage Motors</h3><p class="sub">Add or delete motors here. The Home dashboard stays clean and displays all motor readings.</p>
+  <div id="motorManagerItems"></div><button class="addbtn" id="addMotor">＋ ADD NEW MOTOR</button>
+ </div>
+ <div class="panel" id="motorProtection">
+  <h3>Motor Ampere Protection</h3>
+  <p class="sub">Set separate current limits for each motor. Low current can indicate dry running / no water; high current can indicate overload or a mechanical fault.</p>
+  <label class="field"><span>Select motor</span><select id="protectionMotor"><option value="">Select motor</option></select></label>
+  <div class="stats">
+   <div class="stat"><span>Minimum current (A)</span><strong>Dry-run limit</strong></div>
+   <div class="stat"><span>Maximum current (A)</span><strong>Overload limit</strong></div>
+   <div class="stat"><span>Trip delay</span><strong>Time filter</strong></div>
+  </div>
+  <label class="field"><span>Minimum running current (A) — below this may mean dry run</span><input id="minAmp" type="number" min="0" step="0.1" placeholder="Enter calibrated minimum A"></label>
+  <label class="field"><span>Maximum running current (A) — above this means overload</span><input id="maxAmp" type="number" min="0" step="0.1" placeholder="Enter motor rated limit A"></label>
+  <label class="field"><span>Low-current / dry-run trip delay (seconds)</span><input id="lowDelay" type="number" min="1" max="120" value="8"></label>
+  <label class="field"><span>High-current / overload trip delay (seconds)</span><input id="highDelay" type="number" min="1" max="120" value="3"></label>
+  <label class="field"><span>Automatic motor cut-off</span><select id="autoCutoff"><option value="on">Enabled</option><option value="off">Disabled — alert only</option></select></label>
+  <button class="primary" id="saveProtection">SAVE MOTOR PROTECTION</button>
+  <p class="note">Important: thresholds must be set from the motor nameplate and measured normal running current by a qualified electrician. The controller must detect current with a suitable sensor and operate a correctly rated contactor/overload circuit. This app preview only stores the settings locally; it cannot itself stop a real motor. Keep independent hardware overload, short-circuit, phase-failure and emergency protection.</p>
+  <div id="protectionSaved" class="sub" style="margin-top:8px"></div>
+ </div>
+ <div class="panel"><h3>Firebase Setup 🔒</h3><p class="sub">Firebase, google-services.json ਅਤੇ FCM configuration. Password protected.</p><button class="primary" id="adminLogin">🔒 OPEN FIREBASE SETUP</button></div>
+ <div class="panel"><h3>Device Scan & Login</h3><p class="sub">QR code scan ਕਰਕੇ ਆਪਣਾ KISAN 365 device app ਨਾਲ ਜੋੜੋ।</p><button class="primary" onclick="showPage('deviceLogin')">▦ OPEN DEVICE SCAN & LOGIN</button></div>
+ <div class="panel"><h3>Account & Support</h3><a href="tel:+919803234408" style="color:#16834a;font-weight:700;font-size:12px">Call +91 98032 34408</a></div>
+</section>
+<section class="page" id="deviceLogin">
+ <div class="head"><h2>▦ Device Scan & Login</h2><span class="sub">Connect your KISAN 365 device</span></div>
+ <div class="panel">
+  <h3>1. Scan Device QR Code</h3>
+  <p class="sub">ਕੈਮਰੇ ਨਾਲ ਡਿਵਾਈਸ ਦਾ QR ਸਕੈਨ ਕਰੋ ਜਾਂ activation code ਹੱਥੀਂ ਭਰੋ।</p>
+  <video id="deviceQrVideo" playsinline style="display:none;width:100%;max-height:250px;background:#10271a;border-radius:12px"></video>
+  <div id="qrScanStatus" class="note">Camera scan ਸ਼ੁਰੂ ਕਰਨ ਲਈ ਹੇਠਾਂ ਬਟਨ ਦਬਾਓ।</div>
+  <div style="display:flex;gap:8px">
+   <button class="primary" style="flex:1" id="startQrScan" onclick="scanDevice()">START QR SCAN</button>
+   <button class="secondary" style="flex:1" id="stopQrScan" onclick="stopDeviceScan()">STOP CAMERA</button>
+  </div>
+  <label class="field"><span>Device QR / one-time activation code</span><input id="deviceCode" placeholder="QR scan result / activation code"></label>
+  <label class="field"><span>Device serial number</span><input id="deviceSerial" placeholder="K365-XXXX-XXXX"></label>
+  <label class="field"><span>Customer mobile / account ID</span><input id="deviceCustomer" placeholder="Customer account"></label>
+  <label class="field"><span>Assign motor</span><select id="assignMotor"><option>Motor 01</option></select></label>
+  <button class="primary" onclick="activateDevice()">LOGIN / LINK DEVICE</button>
+  <p class="note">Preview only: ਅਸਲੀ activation ਲਈ backend ਵੱਲੋਂ signed one-time code verify ਹੋਣਾ ਲਾਜ਼ਮੀ ਹੈ। QR scan ਹੋਣਾ ਆਪਣੇ ਆਪ ownership ਜਾਂ device activation ਨਹੀਂ ਕਰਦਾ।</p>
+ </div>
+ <div class="panel">
+  <h3>Device Linking Status</h3>
+  <div id="deviceLinkStatus" class="sub">ਕੋਈ ਨਵਾਂ ਡਿਵਾਈਸ ਇਸ preview ਵਿੱਚ link ਨਹੀਂ ਕੀਤਾ ਗਿਆ।</div>
+ </div>
+ <button class="secondary" style="width:100%" onclick="showPage('settings')">← BACK TO SETTINGS</button>
+</section>
+<section class="page" id="admin">
+ <div class="head"><h2>🔒 Firebase Setup</h2><span class="sub">Password protected · Setup only</span></div>
+ <div class="panel"><h3>1. Firebase Connection & google-services.json</h3>
+  <label class="field"><span>Android google-services.json file</span><input type="file" id="googleServicesFile" accept=".json,application/json"></label>
+  <div id="googleServicesInfo" class="note">ਹਾਲੇ ਕੋਈ google-services.json ਫਾਈਲ ਨਹੀਂ ਚੁਣੀ। ਇਹ preview ਵਿੱਚ ਸਿਰਫ਼ ਪੜ੍ਹੀ ਜਾਵੇਗੀ; Firebase ਨਾਲ ਹੁਣੇ ਕਨੈਕਟ ਨਹੀਂ ਹੋਵੇਗੀ।</div>
+  <label class="field"><span>Firebase Project ID</span><input id="fbProject" placeholder="your-project-id"></label>
+  <label class="field"><span>Web API Key</span><input id="fbApi" placeholder="AIza..." autocomplete="off"></label>
+  <label class="field"><span>Auth Domain</span><input id="fbAuth" placeholder="project.firebaseapp.com"></label>
+  <label class="field"><span>App ID</span><input id="fbApp" placeholder="1:...:web:..."></label>
+  <label class="field"><span>Messaging Sender ID</span><input id="fbSender" placeholder="Numeric sender ID"></label>
+  <label class="field"><span>Storage Bucket (optional)</span><input id="fbBucket" placeholder="project.appspot.com"></label>
+  <label class="field"><span>Firestore Database</span><input id="fbDatabase" value="(default)"></label>
+  <button class="primary" id="saveFirebase">SAVE FIREBASE SETTINGS</button>
+  <button class="secondary" style="width:100%;margin-top:8px" onclick="alert('Preview only. A real connection test needs the Firebase Web SDK, your project config, enabled Authentication and Firestore rules.')">TEST FIREBASE CONNECTION</button>
+  <p class="note">Client Web API key / Project ID / App ID are normal Firebase client configuration values. Settings are saved in this browser on this device. Do not put service-account JSON, private keys or Admin SDK credentials here.</p>
+ </div>
+ <div class="panel"><h3>2. Firebase Authentication & Google Sign-In</h3>
+  <label class="field"><span>Email / Password sign-in</span><select id="authEmailEnabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
+  <label class="field"><span>Google Sign-In</span><select id="authGoogleEnabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
+  <label class="field"><span>Google OAuth support email (reference)</span><input id="authGoogleEmail" type="email" placeholder="admin@example.com"></label>
+  <label class="field"><span>Customer email verification</span><select id="authEmailVerify"><option value="required">Required before access</option><option value="optional">Optional</option></select></label>
+  <label class="field"><span>Customer registration policy</span><select id="customerRegistration"><option value="admin_invite">Admin creates / invites customers</option><option value="self_register">Customer self-registration</option></select></label>
+  <label class="field"><span>Default customer role</span><input id="customerDefaultRole" value="customer" readonly></label>
+  <button class="primary" id="saveAuth">SAVE AUTH & REGISTRATION SETTINGS</button>
+  <p class="note">Google provider must also be enabled in Firebase Console → Authentication → Sign-in method, and its authorized domain / OAuth consent details must be configured there. These controls save your chosen settings in this preview; they do not switch Firebase providers live until the app and backend are connected.</p>
+ </div>
+ <div class="panel"><h3>3. FCM Push Notifications</h3>
+  <label class="field"><span>Push notifications</span><select id="fcmEnabled"><option value="enabled">Enabled</option><option value="disabled">Disabled</option></select></label>
+  <label class="field"><span>Web Push VAPID public key (web only)</span><input id="fcmVapid" placeholder="Public VAPID key, if using web push"></label>
+  <label class="field"><span>FCM Registration Token (Firebase app ਤੋਂ ਮਿਲਿਆ token ਇੱਥੇ paste ਕਰੋ)</span><textarea id="fcmToken" rows="4" placeholder="FCM registration token ਇੱਥੇ paste ਕਰੋ"></textarea></label>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:-4px">
+   <button type="button" class="secondary" id="copyFcmToken">COPY FCM TOKEN</button>
+   <button type="button" class="secondary" id="clearFcmToken">CLEAR TOKEN</button>
+  </div>
+  <p class="note" id="fcmTokenStatus">Token ਇਸ browser ਦੇ local storage ਵਿੱਚ save ਹੋਵੇਗਾ। ਅਸਲੀ FCM token Firebase SDK ਐਪ ਰਜਿਸਟਰ ਹੋਣ ਤੋਂ ਬਾਅਦ ਬਣਾਉਂਦਾ ਹੈ; ਇਹ HTML ਆਪਣੇ ਆਪ token generate ਨਹੀਂ ਕਰ ਸਕਦੀ।</p>
+  <label class="field"><span>Power ON title</span><input id="fcmOnTitle" value="KISAN 365 - Power ON"></label>
+  <label class="field"><span>Power ON message</span><input id="fcmOnMessage" value="Electricity supply is now available."></label>
+  <label class="field"><span>Power OFF title</span><input id="fcmOffTitle" value="KISAN 365 - Power OFF"></label>
+  <label class="field"><span>Power OFF message</span><input id="fcmOffMessage" value="Electricity supply has been disconnected."></label>
+  <label class="field"><span>Notification sound profile</span><select id="fcmSound"><option value="high">High priority + vibration</option><option value="normal">Normal</option><option value="silent">Silent</option></select></label>
+  <button class="primary" id="saveFcm">SAVE FCM SETTINGS</button><button class="secondary" style="width:100%;margin-top:8px" id="testFcm">SEND TEST NOTIFICATION</button>
+  <p class="note">FCM server credentials are not entered here. Send notifications through a trusted Cloud Function / server using Firebase Admin SDK. Android notification permission and sound channel must also be configured in the app.</p>
+ </div>
+ <div class="panel"><h3>4. Admin Password</h3>
+  <label class="field"><span>New admin password (minimum 8 characters)</span><input id="newAdminPassword" type="password" autocomplete="new-password" placeholder="Enter a new password"></label>
+  <label class="field"><span>Confirm new admin password</span><input id="confirmAdminPassword" type="password" autocomplete="new-password" placeholder="Confirm password"></label>
+  <button class="primary" id="changeAdminPassword">CHANGE ADMIN PASSWORD</button>
+  <p class="note">This is a local preview lock only. Production admin authorization must be enforced by Firebase Authentication custom claims / server-side roles.</p>
+ </div>
+ <button class="secondary" style="width:100%;margin-bottom:10px" onclick="sessionStorage.removeItem('k365_admin_ok');showPage('settings')">← BACK TO SETTINGS</button>
+</section>
+</main>
+<div id="adminGate" style="display:none;position:fixed;inset:0;background:#071d12b8;z-index:30;align-items:center;justify-content:center;padding:22px">
+ <div class="panel" style="width:min(360px,100%);background:#fff;box-shadow:0 20px 60px #0004">
+  <h3 id="gateTitle">🔒 Admin Password</h3>
+  <p class="sub" id="gateHelp">Enter the admin password to continue.</p>
+  <label class="field"><span>Password</span><input id="gatePassword" type="password" autocomplete="current-password" placeholder="Admin password"></label>
+  <p class="note" id="gateError" style="color:#c33"></p>
+  <button class="primary" id="gateSubmit">UNLOCK ADMIN</button>
+  <button class="secondary" style="width:100%;margin-top:8px" id="gateCancel">CANCEL</button>
+ </div>
+</div>
+<nav class="bottom">
+ <button class="nav active" data-page="home"><b>⌂</b>Home</button>
+ <button class="nav" data-page="timer"><b>◷</b>Timer</button>
+ <button class="nav" data-page="alerts"><b>◉</b>Alerts</button>
+ <button class="nav" data-page="settings"><b>⚙</b>Settings</button>
+</nav></div>
+<script>
+const pages=[...document.querySelectorAll('.page')], navs=[...document.querySelectorAll('.nav')];
+function showPage(id){if(id==='admin'&&!sessionStorage.getItem('k365_admin_ok')){return openAdminGate();}if(id==='admin')loadAdminConfig();if(id!=='deviceLogin')stopDeviceScan();
+;pages.forEach(p=>p.classList.toggle('active',p.id===id));navs.forEach(n=>n.classList.toggle('active',n.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});}
+document.getElementById('googleServicesFile').addEventListener('change',async function(){
+ const file=this.files&&this.files[0];const out=document.getElementById('googleServicesInfo');
+ if(!file){out.textContent='ਹਾਲੇ ਕੋਈ ਫਾਈਲ ਨਹੀਂ ਚੁਣੀ।';return;}
+ try{
+  const cfg=JSON.parse(await file.text());
+  const client=cfg.client&&cfg.client[0]||{};
+  const info=client.client_info||{};
+  const android=info.android_client_info||{};
+  const details=[
+   'File: '+file.name,
+   'Project ID: '+(cfg.project_info?.project_id||'Not found'),
+   'Project Number: '+(cfg.project_info?.project_number||'Not found'),
+   'Firebase App ID: '+(info.mobilesdk_app_id||'Not found'),
+   'Android Package: '+(android.package_name||'Not found')
+  ];
+  out.textContent=details.join(' · ');
+  localStorage.setItem('k365_google_services_preview',JSON.stringify({fileName:file.name,projectId:cfg.project_info?.project_id||'',projectNumber:cfg.project_info?.project_number||'',appId:info.mobilesdk_app_id||'',packageName:android.package_name||''}));
+ }catch(err){out.textContent='ਇਹ valid google-services.json ਫਾਈਲ ਨਹੀਂ ਲੱਗਦੀ।';}
+})
+navs.forEach(n=>n.addEventListener('click',()=>showPage(n.dataset.page)));
+let timerEnd=0,timerInterval=null;
+function fmt(s){s=Math.max(0,Math.floor(s));let h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return [h,m,x].map(v=>String(v).padStart(2,'0')).join(':')}
+function refreshTimer(){let left=timerEnd?Math.max(0,Math.ceil((timerEnd-Date.now())/1000)):0;document.getElementById('headerTimer').textContent=timerEnd?fmt(left):'--:--:--';if(timerEnd&&left<=0){clearInterval(timerInterval);timerEnd=0;document.getElementById('timerState').textContent='Finished';document.getElementById('headerTimer').textContent='00:00:00';alert('Timer finished. Demo only: no real motor command was sent.');}}
+const duration=document.getElementById('duration');
+function updateDuration(){let m=+duration.value;document.getElementById('durationLabel').textContent=m<60?m+' minutes':Math.floor(m/60)+' hour'+(m>=120?'s':'')+(m%60?' '+m%60+' min':'');document.getElementById('durationClock').textContent=fmt(m*60)}
+duration.addEventListener('input',updateDuration);updateDuration();
+document.getElementById('startTimer').onclick=()=>{timerEnd=Date.now()+(+duration.value)*60000;document.getElementById('timerState').textContent='Running';clearInterval(timerInterval);refreshTimer();timerInterval=setInterval(refreshTimer,1000);showPage('home')};
+function cancelTimer(){clearInterval(timerInterval);timerEnd=0;document.getElementById('timerState').textContent='Cancelled';document.getElementById('headerTimer').textContent='--:--:--'}
+document.getElementById('cancelTimer').onclick=cancelTimer;document.getElementById('headerCancel').onclick=()=>{if(timerEnd)cancelTimer()};
+function motorAction(btn,on){const card=btn.closest('.motor');card.classList.toggle('running',on);const state=card.querySelector('.state');state.textContent=on?'MOTOR RUNNING':'MOTOR OFF';state.classList.toggle('off',!on);card.querySelector('.gear').style.color=on?'#16834a':'#91a096';}
+function deleteMotorCard(btn){
+ const card=btn.closest('.motor');if(!card)return;
+ if(!confirm('Delete this motor?'))return;
+ card.remove();syncMotorSelects();
+}
+function renderMotorManager(){
+ const box=document.getElementById('motorManagerItems');if(!box)return;
+ box.innerHTML='';
+ document.querySelectorAll('#motorCards .motor').forEach((card,i)=>{
+  const row=document.createElement('div');
+  row.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:9px 2px;border-bottom:1px solid #e2ebe5;font-size:12px';
+  const name=document.createElement('strong');name.textContent=card.querySelector('.motorname').textContent.trim();
+  const del=document.createElement('button');del.className='secondary';del.textContent='DELETE';del.style.color='#bd3939';
+  del.onclick=()=>{if(confirm('Delete this motor?')){card.remove();syncMotorSelects();}};
+  row.append(name,del);box.appendChild(row);
+ });
+ if(!box.children.length)box.innerHTML='<p class="sub">No motors added. Use Add New Motor.</p>';
+}
+function setSupplyStatus(isOn){const el=document.getElementById('supplyStatus');document.getElementById('supplyText').textContent=isOn?'POWER SUPPLY ON':'POWER SUPPLY OFF';el.classList.toggle('offline',!isOn);}
+function syncMotorSelects(){
+ const cards=[...document.querySelectorAll('#motorCards .motor')];
+ const names=cards.map(x=>x.querySelector('.motorname').textContent.trim());
+ ['timerMotor','assignMotor','protectionMotor'].forEach(id=>{
+  const el=document.getElementById(id);
+  if(el){const first=id==='protectionMotor'?'<option value="">Select motor</option>':'';el.innerHTML=first;names.forEach(n=>{const o=document.createElement('option');o.value=n;o.textContent=n;el.appendChild(o);});}
+ });
+ const count=document.getElementById('homeMotorCount');if(count)count.textContent=String(names.length);
+ renderMotorManager();
+}
+document.getElementById('addMotor').onclick=()=>{
+ const cards=document.querySelectorAll('#motorCards .motor');
+ if(cards.length>=7){alert('Maximum 7 motors allowed.');return;}
+ const id=String(Math.max(0,...[...cards].map(c=>+(c.dataset.motor||0)))+1).padStart(2,'0');
+ const card=document.createElement('article');card.className='motor';card.dataset.motor=id;
+ card.innerHTML=`<div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR ${id}</div><div><span class="state off">MOTOR OFF</span></div></div><div class="phasegrid"><div class="phase r"><b>R PHASE</b><strong>-- V</strong><small>-- A</small></div><div class="phase y"><b>Y PHASE</b><strong>-- V</strong><small>-- A</small></div><div class="phase b"><b>B PHASE</b><strong>-- V</strong><small>-- A</small></div></div><div class="stats"><div class="stat"><span>Total Current</span><strong>-- A</strong></div><div class="stat"><span>Power</span><strong>-- kW</strong></div><div class="stat"><span>Frequency</span><strong>-- Hz</strong></div></div><div class="controls"><button class="onbtn">▶ MOTOR ON</button><button class="offbtn">■ MOTOR OFF</button></div><div class="smallrow"><span>Device: Not assigned</span><span>Preview</span></div>`;
+ card.querySelector('.onbtn').onclick=function(){motorAction(this,true)};
+ card.querySelector('.offbtn').onclick=function(){motorAction(this,false)};
+ document.getElementById('motorCards').appendChild(card);syncMotorSelects();
+};
+const CONFIG_KEY='kisan365_admin_config_v1';
+function saveAdminConfig(){
+ const config={firebase:{projectId:document.getElementById('fbProject').value.trim(),apiKey:document.getElementById('fbApi').value.trim(),authDomain:document.getElementById('fbAuth').value.trim(),appId:document.getElementById('fbApp').value.trim(),senderId:document.getElementById('fbSender').value.trim(),storageBucket:document.getElementById('fbBucket').value.trim(),database:document.getElementById('fbDatabase').value.trim()},auth:{emailEnabled:document.getElementById('authEmailEnabled').value,googleEnabled:document.getElementById('authGoogleEnabled').value,googleEmail:document.getElementById('authGoogleEmail').value.trim(),emailVerification:document.getElementById('authEmailVerify').value,customerRegistration:document.getElementById('customerRegistration').value,defaultRole:'customer'},fcm:{enabled:document.getElementById('fcmEnabled').value,vapid:document.getElementById('fcmVapid').value.trim(),onTitle:document.getElementById('fcmOnTitle').value,onMessage:document.getElementById('fcmOnMessage').value,offTitle:document.getElementById('fcmOffTitle').value,offMessage:document.getElementById('fcmOffMessage').value,sound:document.getElementById('fcmSound').value,token:document.getElementById('fcmToken').value.trim()}};
+ localStorage.setItem(CONFIG_KEY,JSON.stringify(config));
+}
+function loadAdminConfig(){
+ try{const c=JSON.parse(localStorage.getItem(CONFIG_KEY)||'{}'),f=c.firebase||{},n=c.fcm||{},a=c.auth||{};
+ const values={fbProject:f.projectId,fbApi:f.apiKey,fbAuth:f.authDomain,fbApp:f.appId,fbSender:f.senderId,fbBucket:f.storageBucket,fbDatabase:f.database,authEmailEnabled:a.emailEnabled,authGoogleEnabled:a.googleEnabled,authGoogleEmail:a.googleEmail,authEmailVerify:a.emailVerification,customerRegistration:a.customerRegistration,fcmEnabled:n.enabled,fcmVapid:n.vapid,fcmOnTitle:n.onTitle,fcmOnMessage:n.onMessage,fcmOffTitle:n.offTitle,fcmOffMessage:n.offMessage,fcmSound:n.sound,fcmToken:n.token};
+ Object.entries(values).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!==undefined&&v!==null)el.value=v;});
+ }catch(e){console.warn('Could not load saved admin settings',e);}
+}
+document.getElementById('saveFirebase').onclick=()=>{saveAdminConfig();alert('Firebase settings saved on this device. Live connection is not enabled until Firebase SDK/backend is configured.');};
+document.getElementById('saveAuth').onclick=()=>{saveAdminConfig();alert('Authentication and customer registration preferences saved on this device. Google / Email providers still need Firebase Console and production app integration.');};
+document.getElementById('saveFcm').onclick=()=>{saveAdminConfig();document.getElementById('fcmTokenStatus').textContent='FCM settings ਅਤੇ token ਇਸ browser ਵਿੱਚ save ਹੋ ਗਏ। ਅਸਲੀ push delivery ਲਈ app/backend integration ਹਾਲੇ ਲੋੜੀਂਦੀ ਹੈ।';alert('FCM settings and token saved on this device.');};
+document.getElementById('copyFcmToken').onclick=async()=>{const token=document.getElementById('fcmToken').value.trim();if(!token){alert('ਪਹਿਲਾਂ FCM token paste ਕਰੋ।');return;}try{await navigator.clipboard.writeText(token);document.getElementById('fcmTokenStatus').textContent='FCM token clipboard ਵਿੱਚ copy ਹੋ ਗਿਆ।';}catch(e){const field=document.getElementById('fcmToken');field.focus();field.select();alert('Token select ਕਰ ਦਿੱਤਾ ਹੈ। Copy ਕਰਨ ਲਈ Copy ਦਬਾਓ।');}};
+document.getElementById('clearFcmToken').onclick=()=>{document.getElementById('fcmToken').value='';document.getElementById('fcmTokenStatus').textContent='Token field ਸਾਫ਼ ਕਰ ਦਿੱਤੀ। Save FCM Settings ਦਬਾ ਕੇ ਇਹ ਬਦਲਾਅ ਸੰਭਾਲੋ।';};
+document.getElementById('testFcm').onclick=()=>alert('Settings are saved, but a real test notification requires deployed Firebase Cloud Messaging and a registered app token.');
+document.getElementById('changeAdminPassword').onclick=async()=>{const a=document.getElementById('newAdminPassword').value,b=document.getElementById('confirmAdminPassword').value;if(a.length<8)return alert('Password must be at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(a));const h=Array.from(new Uint8Array(d)).map(x=>x.toString(16).padStart(2,'0')).join('');localStorage.setItem('k365_admin_pass_hash',h);document.getElementById('newAdminPassword').value='';document.getElementById('confirmAdminPassword').value='';alert('Admin password changed on this device.');};
+loadAdminConfig();
+document.getElementById('saveProtection').onclick=()=>{
+ const motor=document.getElementById('protectionMotor').value;
+ const min=Number(document.getElementById('minAmp').value),max=Number(document.getElementById('maxAmp').value);
+ const low=Number(document.getElementById('lowDelay').value),high=Number(document.getElementById('highDelay').value);
+ if(!motor)return alert('Please select a motor.');
+ if(document.getElementById('minAmp').value===''||document.getElementById('maxAmp').value==='')return alert('Enter both minimum and maximum ampere limits.');
+ if(!(min>0&&max>min))return alert('Maximum current must be greater than minimum current; both must be above zero.');
+ if(!(low>=1&&high>=1))return alert('Trip delays must be at least 1 second.');
+ document.getElementById('protectionSaved').textContent='Preview settings validated for '+motor+': Min '+min+' A · Max '+max+' A · Dry-run delay '+low+' s · Overload delay '+high+' s · Auto cut-off '+document.getElementById('autoCutoff').value.toUpperCase()+'.';
+ alert('Motor protection settings checked for '+motor+'. Preview only — not sent to a controller.');
+};
+let deviceScanStream=null,deviceScanFrame=0;
+async function scanDevice(){
+ const status=document.getElementById('qrScanStatus'),video=document.getElementById('deviceQrVideo');
+ if(!('BarcodeDetector' in window)){status.textContent='ਇਸ browser ਵਿੱਚ QR camera detection support ਨਹੀਂ। Activation code ਹੱਥੀਂ ਭਰੋ।';return;}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){status.textContent='Camera access ਉਪਲਬਧ ਨਹੀਂ। HTTPS browser ਵਰਤੋ ਜਾਂ code ਹੱਥੀਂ ਭਰੋ।';return;}
+ try{
+  deviceScanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
+  video.srcObject=deviceScanStream;video.style.display='block';await video.play();
+  const detector=new BarcodeDetector({formats:['qr_code']});
+  status.textContent='QR ਕੋਡ ਕੈਮਰੇ ਸਾਹਮਣੇ ਲਿਆਓ…';
+  const scanFrame=async()=>{
+   if(!deviceScanStream)return;
+   try{const found=await detector.detect(video);if(found.length){
+    document.getElementById('deviceCode').value=found[0].rawValue;
+    status.textContent='QR ਪੜ੍ਹ ਲਿਆ ਗਿਆ। ਹੁਣ serial/account ਵੇਰਵੇ ਚੈੱਕ ਕਰਕੇ LOGIN / LINK DEVICE ਦਬਾਓ।';
+    stopDeviceScan();return;
+   }}catch(err){}
+   deviceScanFrame=requestAnimationFrame(scanFrame);
+  };
+  scanFrame();
+ }catch(err){status.textContent='Camera permission ਨਹੀਂ ਮਿਲੀ। Browser settings ਵਿੱਚ camera allow ਕਰੋ ਜਾਂ code ਹੱਥੀਂ ਭਰੋ।';stopDeviceScan();}
+}
+function stopDeviceScan(){
+ if(deviceScanFrame)cancelAnimationFrame(deviceScanFrame);deviceScanFrame=0;
+ if(deviceScanStream){deviceScanStream.getTracks().forEach(t=>t.stop());deviceScanStream=null;}
+ const video=document.getElementById('deviceQrVideo');if(video){video.pause();video.srcObject=null;video.style.display='none';}
+}
+function readQrImage(input){if(input.files&&input.files[0])document.getElementById('qrScanStatus').textContent='QR image ਚੁਣੀ ਗਈ। ਇਸ preview ਵਿੱਚ image QR decoding ਉਪਲਬਧ ਨਹੀਂ; camera scan ਜਾਂ code ਹੱਥੀਂ ਵਰਤੋ।';}
+function activateDevice(){
+ const code=document.getElementById('deviceCode').value.trim();
+ const serial=document.getElementById('deviceSerial').value.trim();
+ const customer=document.getElementById('deviceCustomer').value.trim();
+ if(!code){alert('ਪਹਿਲਾਂ QR scan ਕਰੋ ਜਾਂ one-time activation code ਭਰੋ।');return;}
+ if(!serial){alert('Device serial number ਭਰੋ।');return;}
+ if(!customer){alert('Customer mobile / account ID ਭਰੋ।');return;}
+ document.getElementById('deviceLinkStatus').textContent='Preview request ਤਿਆਰ: '+serial+' · '+customer+' · '+document.getElementById('assignMotor').value+'. ਅਸਲੀ device login/activation ਨਹੀਂ ਹੋਈ ਕਿਉਂਕਿ backend ਹਾਲੇ ਜੋੜਿਆ ਨਹੀਂ।';
+ alert('Device details preview ਵਿੱਚ ਦਰਜ ਹੋ ਗਏ। ਅਸਲੀ activation ਲਈ Firebase/backend verification ਅਖੀਰ ਵਿੱਚ ਜੋੜਾਂਗੇ।');
+}
+function openAdminGate(){const gate=document.getElementById('adminGate');const hasPass=!!localStorage.getItem('k365_admin_pass_hash');document.getElementById('gateTitle').textContent=hasPass?'🔒 Firebase Setup Login':'🔐 Create Setup Password';document.getElementById('gateHelp').textContent=hasPass?'Firebase Setup ਖੋਲ੍ਹਣ ਲਈ password ਦਿਓ।':'Firebase Setup ਲਈ ਆਪਣਾ password ਬਣਾਓ (ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ)।';document.getElementById('gateSubmit').textContent=hasPass?'UNLOCK FIREBASE SETUP':'SET PASSWORD & OPEN';document.getElementById('gatePassword').value='';document.getElementById('gateError').textContent='';gate.style.display='flex';}
+document.getElementById('adminLogin').onclick=openAdminGate;
+document.getElementById('gateCancel').onclick=()=>document.getElementById('adminGate').style.display='none';
+document.getElementById('gateSubmit').onclick=async()=>{const val=document.getElementById('gatePassword').value;const defaultPass='Kisan365@Admin2026';const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(val));const hash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');let saved=localStorage.getItem('k365_admin_pass_hash');if(!saved){if(val!==defaultPass){document.getElementById('gateError').textContent='Default preview password: Kisan365@Admin2026.';return;}localStorage.setItem('k365_admin_pass_hash',hash);saved=hash;}if(saved===hash){sessionStorage.setItem('k365_admin_ok','1');}else{document.getElementById('gateError').textContent='Incorrect admin password.';return;}document.getElementById('adminGate').style.display='none';pages.forEach(p=>p.classList.toggle('active',p.id==='admin'));navs.forEach(n=>n.classList.toggle('active',n.dataset.page==='settings'));window.scrollTo({top:0,behavior:'smooth'});};
+syncMotorSelects();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
+</script></body></html>

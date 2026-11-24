@@ -9,7 +9,7 @@
 :root{--g:#16834a;--gd:#0d6035;--bg:#f2f7f3;--ink:#183629;--muted:#74847a;--line:#e2ebe5;--red:#d84c4c;--blue:#2878c8;--yellow:#c79a18}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,sans-serif;color:var(--ink)}
 .app{max-width:440px;min-height:100vh;margin:auto;background:white;position:relative;padding-bottom:76px;box-shadow:0 0 25px #163c2810}
-header{background:linear-gradient(135deg,#0c6034,#1b9853);color:#fff;padding:10px 14px 9px;border-radius:0 0 18px 18px}
+header{background:linear-gradient(135deg,#0c6034,#1b9853);color:#fff;padding:calc(10px + env(safe-area-inset-top, 24px)) 14px 9px;border-radius:0 0 18px 18px}
 .brand{display:flex;align-items:center;gap:10px}.logo{width:36px;height:36px;border-radius:11px;background:#ffffff24;display:grid;place-items:center;font-size:21px}.brand h1{font-size:17px;margin:0;letter-spacing:.5px}.brand small{display:block;font-size:9px;opacity:.85;margin-top:3px}.phone{margin-left:auto;color:#fff;text-decoration:none;border:1px solid #ffffff66;border-radius:18px;padding:7px 9px;font-size:10px}
 .devicebar{display:flex;align-items:center;justify-content:space-between;margin-top:9px;font-size:10px}.online{display:flex;align-items:center;gap:6px;font-weight:700}.lamp{width:9px;height:9px;border-radius:50%;background:#39e17c;box-shadow:0 0 0 3px #ffffff22}.online.offline .lamp{background:#ff6262}
 .timerstrip{margin-top:8px;border-radius:10px;background:#ffffff20;padding:7px 9px;display:flex;justify-content:space-between;align-items:center;font-size:10px}.timerstrip strong{font-size:17px;letter-spacing:1px}.timerstrip button{border:0;border-radius:8px;background:#fff;color:var(--gd);font-weight:700;padding:6px 10px}
@@ -24,6 +24,17 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
 .note{font-size:9px;line-height:1.45;color:var(--muted);margin:9px 1px}
 .bottom{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(440px,100%);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:9px 3px calc(9px + env(safe-area-inset-bottom));z-index:5}.nav{color:#829087;text-align:center;font-size:9px;min-width:48px;border:0;background:none}.nav b{display:block;font-size:18px;margin-bottom:3px}.nav.active{color:var(--g);font-weight:700}
 @media(min-width:600px){body{padding:18px 0}.app{border-radius:22px;overflow:hidden;min-height:900px}.bottom{position:absolute;border-radius:0 0 22px 22px}}
+
+.light-panel{border:1px solid var(--line);border-radius:13px;padding:10px;margin:0 0 10px;background:#fff}
+.light-summary{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px}
+.light-summary strong{font-size:14px}.light-summary span{font-size:10px;color:var(--muted)}
+.light-track{display:grid;grid-template-columns:repeat(24,minmax(0,1fr));gap:2px;height:16px}
+.light-hour{height:16px;border-radius:3px;background:#d94c4c;overflow:hidden}.light-hour i{display:block;height:100%;width:0;background:#16834a}
+.light-axis{display:flex;justify-content:space-between;color:var(--muted);font-size:9px;margin-top:4px}
+.light-meta{display:flex;justify-content:space-between;gap:8px;margin-top:8px;font-size:10px}.light-meta b{color:var(--g)}
+.power-events{margin-top:9px;border-top:1px solid var(--line);padding-top:7px}
+.power-event{display:flex;justify-content:space-between;gap:8px;padding:5px 0;font-size:10px;border-bottom:1px solid #f0f3f1}
+.power-event.on b{color:var(--g)}.power-event.off b{color:var(--red)}
 </style></head>
 <body><div class="app">
 <header>
@@ -41,6 +52,14 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <div class="stat"><span>Device Status</span><strong id="dashDevice">ONLINE</strong></div>
   <div class="stat"><span>Power Supply</span><strong id="dashSupply">ON</strong></div>
   <div class="stat"><span>Total Motors</span><strong id="homeMotorCount">1</strong></div>
+ </div>
+
+ <div class="light-panel" id="dailyLightPanel">
+  <div class="light-summary"><strong>ਅੱਜ ਦੀ ਬਿਜਲੀ ਰਿਪੋਰਟ</strong><span id="lightDate">ਅੱਜ · 24 ਘੰਟੇ</span></div>
+  <div class="light-track" id="lightTrack"></div>
+  <div class="light-axis"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
+  <div class="light-meta"><span>🟢 ਲਾਈਟ ਚੱਲੀ: <b id="todayOnTime">--</b></span><span>🔴 ਬੰਦ: <b id="todayOffTime">--</b></span></div>
+  <div class="power-events"><div class="light-summary"><strong style="font-size:11px">ਬਿਜਲੀ ਆਉਣ / ਜਾਣ ਦੀਆਂ ਐਂਟਰੀਆਂ</strong><span id="eventCount">0 entries</span></div><div id="powerEventList"><div class="sub">ਡਿਵਾਈਸ ਡਾਟਾ ਆਉਣ 'ਤੇ ਐਂਟਰੀਆਂ ਇੱਥੇ ਸੇਵ ਹੋਣਗੀਆਂ।</div></div></div>
  </div>
  <div id="motorCards">
   <article class="motor" data-motor="1">
@@ -95,6 +114,15 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <button class="primary" id="saveProtection">SAVE MOTOR PROTECTION</button>
   <p class="note">Important: thresholds must be set from the motor nameplate and measured normal running current by a qualified electrician. The controller must detect current with a suitable sensor and operate a correctly rated contactor/overload circuit. This app preview only stores the settings locally; it cannot itself stop a real motor. Keep independent hardware overload, short-circuit, phase-failure and emergency protection.</p>
   <div id="protectionSaved" class="sub" style="margin-top:8px"></div>
+ </div>
+
+ <div class="panel" id="powerSoundSettings"><h3>Power ON / OFF Notification Sound 🔔</h3>
+  <label class="field"><span>Power ON ringtone</span><select id="powerOnSound"><option value="default">Default</option><option value="bell">Bell</option><option value="classic">Classic Ring</option><option value="siren">Siren</option><option value="silent">Silent</option></select></label>
+  <label class="field"><span>Power OFF ringtone</span><select id="powerOffSound"><option value="default">Default</option><option value="bell">Bell</option><option value="classic">Classic Ring</option><option value="siren">Siren</option><option value="silent">Silent</option></select></label>
+  <label class="field"><span>ਆਪਣੀ ringtone ਚੁਣੋ (MP3 / WAV)</span><input id="customPowerSound" type="file" accept="audio/*"></label>
+  <button class="secondary" id="testPowerOnSound" type="button">▶ TEST ON SOUND</button><button class="secondary" id="testPowerOffSound" type="button">▶ TEST OFF SOUND</button>
+  <button class="primary" id="savePowerSounds" type="button">SAVE SOUND SETTINGS</button>
+  <p class="note" id="powerSoundStatus">ਇੱਥੇ ringtone ਚੋਣ ਅਤੇ preview ਸੇਵ ਹੋਵੇਗੀ। Background Android notifications ਲਈ native FCM integration ਲੋੜੀਂਦੀ ਹੈ।</p>
  </div>
  <div class="panel"><h3>Firebase Setup 🔒</h3><p class="sub">Firebase, google-services.json ਅਤੇ FCM configuration. Password protected.</p><button class="primary" id="adminLogin">🔒 OPEN FIREBASE SETUP</button></div>
  <div class="panel"><h3>Device Scan & Login</h3><p class="sub">QR code scan ਕਰਕੇ ਆਪਣਾ KISAN 365 device app ਨਾਲ ਜੋੜੋ।</p><button class="primary" onclick="showPage('deviceLogin')">▦ OPEN DEVICE SCAN & LOGIN</button></div>
@@ -193,6 +221,21 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
  <button class="nav" data-page="settings"><b>⚙</b>Settings</button>
 </nav></div>
 <script>
+
+const POWER_EVENTS_KEY='k365_power_events_v1', POWER_SOUND_KEY='k365_power_sounds_v1';
+function readPowerEvents(){try{return JSON.parse(localStorage.getItem(POWER_EVENTS_KEY)||'[]')}catch(e){return[]}}
+function todayBounds(){const d=new Date();d.setHours(0,0,0,0);return d.getTime()}
+function powerIntervals(now){const events=readPowerEvents().sort((a,b)=>a.at-b.at),start=todayBounds();let state=null,cursor=start,arr=[];for(const e of events){if(e.at<start){state=e.state;continue}if(e.at>now)break;if(state==='ON'&&e.at>cursor)arr.push([cursor,e.at]);cursor=e.at;state=e.state}if(state==='ON'&&now>cursor)arr.push([cursor,now]);return arr}
+function fmtPowerDuration(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/3600)+' ਘੰਟੇ '+Math.floor(sec%3600/60)+' ਮਿੰਟ'}
+function renderDailyPower(){const track=document.getElementById('lightTrack');if(!track)return;const now=Date.now(),start=todayBounds(),arr=powerIntervals(now);let on=0;arr.forEach(x=>on+=Math.max(0,x[1]-x[0])/1000);track.innerHTML='';for(let h=0;h<24;h++){const a=start+h*3600000,b=a+3600000;let sec=0;arr.forEach(x=>sec+=Math.max(0,Math.min(x[1],b)-Math.max(x[0],a))/1000);const d=document.createElement('div');d.className='light-hour';const i=document.createElement('i');i.style.width=Math.min(100,sec/3600*100)+'%';d.appendChild(i);d.title=String(h).padStart(2,'0')+':00 · '+Math.round(sec/60)+' min ON';track.appendChild(d)}document.getElementById('lightDate').textContent=new Date().toLocaleDateString();document.getElementById('todayOnTime').textContent=fmtPowerDuration(on);document.getElementById('todayOffTime').textContent=fmtPowerDuration(Math.max(0,Math.min(now,start+86400000)-start)/1000-on);const todays=readPowerEvents().filter(e=>e.at>=start&&e.at<start+86400000).sort((a,b)=>b.at-a.at);document.getElementById('eventCount').textContent=todays.length+' entries';const list=document.getElementById('powerEventList');list.innerHTML='';if(!todays.length){list.textContent='ਅੱਜ ਹਾਲੇ ਕੋਈ Power ON/OFF event ਨਹੀਂ ਮਿਲਿਆ।';return}todays.forEach(e=>{const row=document.createElement('div');row.className='power-event '+(e.state==='ON'?'on':'off');const b=document.createElement('b');b.textContent=e.state==='ON'?'🟢 POWER ਆਈ':'🔴 POWER ਗਈ';const t=document.createElement('span');t.textContent=new Date(e.at).toLocaleString();row.append(b,t);list.appendChild(row)})}
+function recordSupplyEvent(on){const events=readPowerEvents(),state=on?'ON':'OFF';if(events.length&&events[events.length-1].state===state)return;events.push({at:Date.now(),state});localStorage.setItem(POWER_EVENTS_KEY,JSON.stringify(events.slice(-2000)));renderDailyPower()}
+function playPowerPreview(kind){let s={};try{s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}const mode=kind==='ON'?(s.on||'default'):(s.off||'default');if(mode==='silent')return;if(s.custom){new Audio(s.custom).play().catch(()=>{});return}try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);const seq=mode==='siren'?[650,900,650,900]:mode==='classic'?[880,660,880]:mode==='bell'?[1046,1318]:[740,880];let t=ctx.currentTime;seq.forEach(v=>{o.frequency.setValueAtTime(v,t);g.gain.setValueAtTime(.16,t);g.gain.setValueAtTime(0,t+.18);t+=.24});o.start();o.stop(t+.02);o.onended=()=>ctx.close()}catch(e){}}
+function loadPowerSoundPrefs(){try{const s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}');if(s.on)document.getElementById('powerOnSound').value=s.on;if(s.off)document.getElementById('powerOffSound').value=s.off}catch(e){}}
+document.getElementById('savePowerSounds').onclick=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}localStorage.setItem(POWER_SOUND_KEY,JSON.stringify({on:document.getElementById('powerOnSound').value,off:document.getElementById('powerOffSound').value,custom:old.custom||''}));document.getElementById('powerSoundStatus').textContent='Ringtone preference ਸੇਵ ਹੋ ਗਈ।'};
+document.getElementById('testPowerOnSound').onclick=()=>playPowerPreview('ON');document.getElementById('testPowerOffSound').onclick=()=>playPowerPreview('OFF');
+document.getElementById('customPowerSound').addEventListener('change',function(){const file=this.files&&this.files[0];if(!file)return;if(file.size>1500000){alert('1.5 MB ਤੋਂ ਛੋਟੀ audio file ਚੁਣੋ।');return}const reader=new FileReader();reader.onload=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}old.custom=reader.result;localStorage.setItem(POWER_SOUND_KEY,JSON.stringify(old));document.getElementById('powerSoundStatus').textContent='Custom ringtone ਸੇਵ ਹੋ ਗਈ। Test button ਨਾਲ ਸੁਣੋ।'};reader.readAsDataURL(file)});
+loadPowerSoundPrefs();renderDailyPower();setInterval(renderDailyPower,60000);
+
 const pages=[...document.querySelectorAll('.page')], navs=[...document.querySelectorAll('.nav')];
 function showPage(id){if(id==='admin'&&!sessionStorage.getItem('k365_admin_ok')){return openAdminGate();}if(id==='admin')loadAdminConfig();if(id!=='deviceLogin')stopDeviceScan();
 ;pages.forEach(p=>p.classList.toggle('active',p.id===id));navs.forEach(n=>n.classList.toggle('active',n.dataset.page===id));window.scrollTo({top:0,behavior:'smooth'});}
@@ -244,7 +287,7 @@ function renderMotorManager(){
  });
  if(!box.children.length)box.innerHTML='<p class="sub">No motors added. Use Add New Motor.</p>';
 }
-function setSupplyStatus(isOn){const el=document.getElementById('supplyStatus');document.getElementById('supplyText').textContent=isOn?'POWER SUPPLY ON':'POWER SUPPLY OFF';el.classList.toggle('offline',!isOn);}
+function setSupplyStatus(isOn){const el=document.getElementById('supplyStatus');document.getElementById('supplyText').textContent=isOn?'POWER SUPPLY ON':'POWER SUPPLY OFF';el.classList.toggle('offline',!isOn);document.getElementById('dashSupply').textContent=isOn?'ON':'OFF';recordSupplyEvent(isOn);playPowerPreview(isOn?'ON':'OFF');}
 function syncMotorSelects(){
  const cards=[...document.querySelectorAll('#motorCards .motor')];
  const names=cards.map(x=>x.querySelector('.motorname').textContent.trim());

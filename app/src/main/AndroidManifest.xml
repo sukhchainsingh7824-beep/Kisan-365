@@ -12,6 +12,10 @@
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
         <activity
+            android:name=".DashboardActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
 
@@ -21,7 +25,7 @@
             </intent-filter>
 
         </activity>
-    </application>
 
+    </application>
 </manifest>
 

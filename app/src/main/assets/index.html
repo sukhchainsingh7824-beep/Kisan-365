@@ -54,12 +54,6 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <div class="stat"><span>Total Motors</span><strong id="homeMotorCount">1</strong></div>
  </div>
 
- <div class="light-panel" id="dailyLightPanel">
-  <div class="light-summary"><strong>ਅੱਜ ਦੀ ਬਿਜਲੀ ਰਿਪੋਰਟ</strong><span id="lightDate">ਅੱਜ · 24 ਘੰਟੇ</span></div>
-  <div class="light-track" id="lightTrack"></div>
-  <div class="light-axis"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
-  <div class="light-meta"><span>🟢 ਲਾਈਟ ਚੱਲੀ: <b id="todayOnTime">--</b></span><span>🔴 ਬੰਦ: <b id="todayOffTime">--</b></span></div>
-  <div class="power-events"><div class="light-summary"><strong style="font-size:11px">ਬਿਜਲੀ ਆਉਣ / ਜਾਣ ਦੀਆਂ ਐਂਟਰੀਆਂ</strong><span id="eventCount">0 entries</span></div><div id="powerEventList"><div class="sub">ਡਿਵਾਈਸ ਡਾਟਾ ਆਉਣ 'ਤੇ ਐਂਟਰੀਆਂ ਇੱਥੇ ਸੇਵ ਹੋਣਗੀਆਂ।</div></div></div>
  </div>
  <div id="motorCards">
   <article class="motor" data-motor="1">
@@ -74,7 +68,13 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
    <div class="smallrow"><span>Supply: Available</span><span>Power factor: 0.92</span></div>
   </article>
  </div>
- <p class="note">Sample readings only. Actual readings and motor control require the connected controller and secure backend.</p>
+ <div class="light-panel" id="dailyLightPanel">
+  <div class="light-summary"><strong>ਅੱਜ ਦੀ ਬਿਜਲੀ ਰਿਪੋਰਟ</strong><span id="lightDate">ਅੱਜ · 24 ਘੰਟੇ</span></div>
+  <div class="light-track" id="lightTrack"></div>
+  <div class="light-axis"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
+  <div class="light-meta"><span>🟢 ਲਾਈਟ ਚੱਲੀ: <b id="todayOnTime">--</b></span><span>🔴 ਬੰਦ: <b id="todayOffTime">--</b></span></div>
+  <div class="power-events"><div class="light-summary"><strong style="font-size:11px">ਬਿਜਲੀ ਆਉਣ / ਜਾਣ ਦੀਆਂ ਐਂਟਰੀਆਂ</strong><span id="eventCount">0 entries</span></div><div id="powerEventList"><div class="sub">ਡਿਵਾਈਸ ਡਾਟਾ ਆਉਣ 'ਤੇ ਐਂਟਰੀਆਂ ਇੱਥੇ ਸੇਵ ਹੋਣਗੀਆਂ।</div></div></div>
+ <p class="note">Live energy units need the connected energy meter/controller.</p>
 </section>
 <section class="page" id="timer">
  <div class="head"><h2>Motor Timer</h2><span class="sub">Set once · visible on Home</span></div>
@@ -94,12 +94,12 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
 </section>
 <section class="page" id="settings">
  <div class="head"><h2>Settings</h2><span class="sub">Customer & device settings</span></div>
- <div class="panel" id="motorManagement"><h3>Manage Motors</h3><p class="sub">Add or delete motors here. The Home dashboard stays clean and displays all motor readings.</p>
+ <div class="panel" id="motorManagement"><h3>Manage Motors</h3><p class="sub"></p>
   <div id="motorManagerItems"></div><button class="addbtn" id="addMotor">＋ ADD NEW MOTOR</button>
  </div>
  <div class="panel" id="motorProtection">
   <h3>Motor Ampere Protection</h3>
-  <p class="sub">Set separate current limits for each motor. Low current can indicate dry running / no water; high current can indicate overload or a mechanical fault.</p>
+  <p class="sub"></p>
   <label class="field"><span>Select motor</span><select id="protectionMotor"><option value="">Select motor</option></select></label>
   <div class="stats">
    <div class="stat"><span>Minimum current (A)</span><strong>Dry-run limit</strong></div>
@@ -112,7 +112,7 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <label class="field"><span>High-current / overload trip delay (seconds)</span><input id="highDelay" type="number" min="1" max="120" value="3"></label>
   <label class="field"><span>Automatic motor cut-off</span><select id="autoCutoff"><option value="on">Enabled</option><option value="off">Disabled — alert only</option></select></label>
   <button class="primary" id="saveProtection">SAVE MOTOR PROTECTION</button>
-  <p class="note">Important: thresholds must be set from the motor nameplate and measured normal running current by a qualified electrician. The controller must detect current with a suitable sensor and operate a correctly rated contactor/overload circuit. This app preview only stores the settings locally; it cannot itself stop a real motor. Keep independent hardware overload, short-circuit, phase-failure and emergency protection.</p>
+  <p class="note"></p>
   <div id="protectionSaved" class="sub" style="margin-top:8px"></div>
  </div>
 
@@ -122,7 +122,7 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <label class="field"><span>ਆਪਣੀ ringtone ਚੁਣੋ (MP3 / WAV)</span><input id="customPowerSound" type="file" accept="audio/*"></label>
   <button class="secondary" id="testPowerOnSound" type="button">▶ TEST ON SOUND</button><button class="secondary" id="testPowerOffSound" type="button">▶ TEST OFF SOUND</button>
   <button class="primary" id="savePowerSounds" type="button">SAVE SOUND SETTINGS</button>
-  <p class="note" id="powerSoundStatus">ਇੱਥੇ ringtone ਚੋਣ ਅਤੇ preview ਸੇਵ ਹੋਵੇਗੀ। Background Android notifications ਲਈ native FCM integration ਲੋੜੀਂਦੀ ਹੈ।</p>
+  <p class="note" id="powerSoundStatus"></p>
  </div>
  <div class="panel"><h3>Firebase Setup 🔒</h3><p class="sub">Firebase, google-services.json ਅਤੇ FCM configuration. Password protected.</p><button class="primary" id="adminLogin">🔒 OPEN FIREBASE SETUP</button></div>
  <div class="panel"><h3>Device Scan & Login</h3><p class="sub">QR code scan ਕਰਕੇ ਆਪਣਾ KISAN 365 device app ਨਾਲ ਜੋੜੋ।</p><button class="primary" onclick="showPage('deviceLogin')">▦ OPEN DEVICE SCAN & LOGIN</button></div>

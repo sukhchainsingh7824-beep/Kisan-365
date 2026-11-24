@@ -1,5 +1,4 @@
 
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">KISAN 365</string>
     <string name="app_description">Smart Farm Motor Monitoring System</string>
@@ -9,4 +8,3 @@
     <string name="power_monitor">POWER MONITOR</string>
     <string name="motor_control">MOTOR CONTROL</string>
 </resources>
-

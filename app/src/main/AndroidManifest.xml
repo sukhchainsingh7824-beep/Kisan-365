@@ -10,10 +10,6 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
-        <activity
-            android:name=".DashboardActivity"
-            android:exported="false" />
-
         <service
             android:name=".KisanFirebaseMessagingService"
             android:exported="false">
@@ -23,7 +19,7 @@
         </service>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".DashboardActivity"
             android:exported="true">
 
             <intent-filter>

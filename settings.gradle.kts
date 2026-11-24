@@ -14,5 +14,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "KISAN365"
+rootProject.name = "Kisan-365"
 include(":app")

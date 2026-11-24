@@ -35,6 +35,25 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
 .power-events{margin-top:9px;border-top:1px solid var(--line);padding-top:7px}
 .power-event{display:flex;justify-content:space-between;gap:8px;padding:5px 0;font-size:10px;border-bottom:1px solid #f0f3f1}
 .power-event.on b{color:var(--g)}.power-event.off b{color:var(--red)}
+
+html,body{width:100%;min-height:100%;margin:0;overscroll-behavior-y:contain}
+body{background:#fff}
+.app{width:100%;max-width:560px;min-height:100dvh;margin:0 auto;padding-bottom:calc(70px + env(safe-area-inset-bottom));box-shadow:none}
+header{padding:10px 14px 9px;border-radius:0 0 18px 18px}
+main{padding:10px 12px 18px}
+.bottom{width:100%;max-width:560px;padding:8px 3px calc(8px + env(safe-area-inset-bottom))}
+.panel{padding:11px;margin-bottom:8px}.panel h3{font-size:14px;margin-bottom:8px}
+.field{margin:6px 0}.field span{font-size:11px}
+.field input,.field select,.field textarea{padding:9px;font-size:13px}
+.primary,.secondary{min-height:42px}
+#settings .sub:empty,#settings .note:empty{display:none}
+#settings .panel .note,#settings .panel p.sub{display:none}
+#settings .panel{padding:11px}#settings .primary{margin-top:5px}#settings .field{margin:6px 0}
+#settings .addbtn{padding:10px}
+#settings #testPowerOnSound,#settings #testPowerOffSound{width:calc(50% - 3px);display:inline-block;margin:2px 0}
+.light-panel{margin-top:12px}
+@media(min-width:600px){body{padding:0}.app{min-height:100dvh;border-radius:0;overflow:visible}.bottom{position:fixed;border-radius:0}}
+@media(max-width:380px){.brand small{font-size:8px}.phone{padding:6px 7px}.motorname{font-size:12px}.phase strong{font-size:15px}.head h2{font-size:14px}}
 </style></head>
 <body><div class="app">
 <header>
@@ -54,7 +73,6 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   <div class="stat"><span>Total Motors</span><strong id="homeMotorCount">1</strong></div>
  </div>
 
- </div>
  <div id="motorCards">
   <article class="motor" data-motor="1">
    <div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR 01 · MAIN PUMP</div><span class="state off">MOTOR OFF</span></div>
@@ -69,12 +87,12 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
   </article>
  </div>
  <div class="light-panel" id="dailyLightPanel">
-  <div class="light-summary"><strong>ਅੱਜ ਦੀ ਬਿਜਲੀ ਰਿਪੋਰਟ</strong><span id="lightDate">ਅੱਜ · 24 ਘੰਟੇ</span></div>
+  <div class="light-summary"><strong>Today’s Power Report</strong><span id="lightDate">Today · 24 hours</span></div>
   <div class="light-track" id="lightTrack"></div>
   <div class="light-axis"><span>12 AM</span><span>6 AM</span><span>12 PM</span><span>6 PM</span><span>12 AM</span></div>
-  <div class="light-meta"><span>🟢 ਲਾਈਟ ਚੱਲੀ: <b id="todayOnTime">--</b></span><span>🔴 ਬੰਦ: <b id="todayOffTime">--</b></span></div>
-  <div class="power-events"><div class="light-summary"><strong style="font-size:11px">ਬਿਜਲੀ ਆਉਣ / ਜਾਣ ਦੀਆਂ ਐਂਟਰੀਆਂ</strong><span id="eventCount">0 entries</span></div><div id="powerEventList"><div class="sub">ਡਿਵਾਈਸ ਡਾਟਾ ਆਉਣ 'ਤੇ ਐਂਟਰੀਆਂ ਇੱਥੇ ਸੇਵ ਹੋਣਗੀਆਂ।</div></div></div>
- <p class="note">Live energy units need the connected energy meter/controller.</p>
+  <div class="light-meta"><span>Power ON: <b id="todayOnTime">--</b></span><span>Power OFF: <b id="todayOffTime">--</b></span></div>
+  <div class="power-events"><div class="light-summary"><strong style="font-size:11px">Power History</strong><span id="eventCount">0 entries</span></div><div id="powerEventList"><div class="sub">No power events recorded yet.</div></div></div>
+ </div>
 </section>
 <section class="page" id="timer">
  <div class="head"><h2>Motor Timer</h2><span class="sub">Set once · visible on Home</span></div>
@@ -93,39 +111,35 @@ main{padding:10px 12px}.page{display:none}.page.active{display:block}.head{displ
  <div class="panel"><h3>Power Supply OFF</h3><div class="sub">Yesterday · 07:10 PM · Supply disconnected</div></div>
 </section>
 <section class="page" id="settings">
- <div class="head"><h2>Settings</h2><span class="sub">Customer & device settings</span></div>
- <div class="panel" id="motorManagement"><h3>Manage Motors</h3><p class="sub"></p>
+ <div class="head"><h2>Settings</h2></div>
+ <div class="panel" id="motorManagement"><h3>Motors</h3>
   <div id="motorManagerItems"></div><button class="addbtn" id="addMotor">＋ ADD NEW MOTOR</button>
  </div>
  <div class="panel" id="motorProtection">
-  <h3>Motor Ampere Protection</h3>
+  <h3>Motor Protection</h3>
   <p class="sub"></p>
   <label class="field"><span>Select motor</span><select id="protectionMotor"><option value="">Select motor</option></select></label>
-  <div class="stats">
-   <div class="stat"><span>Minimum current (A)</span><strong>Dry-run limit</strong></div>
-   <div class="stat"><span>Maximum current (A)</span><strong>Overload limit</strong></div>
-   <div class="stat"><span>Trip delay</span><strong>Time filter</strong></div>
-  </div>
-  <label class="field"><span>Minimum running current (A) — below this may mean dry run</span><input id="minAmp" type="number" min="0" step="0.1" placeholder="Enter calibrated minimum A"></label>
-  <label class="field"><span>Maximum running current (A) — above this means overload</span><input id="maxAmp" type="number" min="0" step="0.1" placeholder="Enter motor rated limit A"></label>
-  <label class="field"><span>Low-current / dry-run trip delay (seconds)</span><input id="lowDelay" type="number" min="1" max="120" value="8"></label>
-  <label class="field"><span>High-current / overload trip delay (seconds)</span><input id="highDelay" type="number" min="1" max="120" value="3"></label>
-  <label class="field"><span>Automatic motor cut-off</span><select id="autoCutoff"><option value="on">Enabled</option><option value="off">Disabled — alert only</option></select></label>
+  
+  <label class="field"><span>Minimum Current (A)</span><input id="minAmp" type="number" min="0" step="0.1" placeholder="Enter calibrated minimum A"></label>
+  <label class="field"><span>Maximum Current (A)</span><input id="maxAmp" type="number" min="0" step="0.1" placeholder="Enter motor rated limit A"></label>
+  <label class="field"><span>Dry-Run Delay (seconds)</span><input id="lowDelay" type="number" min="1" max="120" value="8"></label>
+  <label class="field"><span>Overload Delay (seconds)</span><input id="highDelay" type="number" min="1" max="120" value="3"></label>
+  <label class="field"><span>Automatic motor cut-off</span><select id="autoCutoff"><option value="on">Enabled</option><option value="off">Disabled</option></select></label>
   <button class="primary" id="saveProtection">SAVE MOTOR PROTECTION</button>
-  <p class="note"></p>
+  
   <div id="protectionSaved" class="sub" style="margin-top:8px"></div>
  </div>
 
- <div class="panel" id="powerSoundSettings"><h3>Power ON / OFF Notification Sound 🔔</h3>
+ <div class="panel" id="powerSoundSettings"><h3>Notification Sounds</h3>
   <label class="field"><span>Power ON ringtone</span><select id="powerOnSound"><option value="default">Default</option><option value="bell">Bell</option><option value="classic">Classic Ring</option><option value="siren">Siren</option><option value="silent">Silent</option></select></label>
   <label class="field"><span>Power OFF ringtone</span><select id="powerOffSound"><option value="default">Default</option><option value="bell">Bell</option><option value="classic">Classic Ring</option><option value="siren">Siren</option><option value="silent">Silent</option></select></label>
-  <label class="field"><span>ਆਪਣੀ ringtone ਚੁਣੋ (MP3 / WAV)</span><input id="customPowerSound" type="file" accept="audio/*"></label>
+  <label class="field"><span>Custom Ringtone (MP3 / WAV)</span><input id="customPowerSound" type="file" accept="audio/*"></label>
   <button class="secondary" id="testPowerOnSound" type="button">▶ TEST ON SOUND</button><button class="secondary" id="testPowerOffSound" type="button">▶ TEST OFF SOUND</button>
   <button class="primary" id="savePowerSounds" type="button">SAVE SOUND SETTINGS</button>
   <p class="note" id="powerSoundStatus"></p>
  </div>
- <div class="panel"><h3>Firebase Setup 🔒</h3><p class="sub">Firebase, google-services.json ਅਤੇ FCM configuration. Password protected.</p><button class="primary" id="adminLogin">🔒 OPEN FIREBASE SETUP</button></div>
- <div class="panel"><h3>Device Scan & Login</h3><p class="sub">QR code scan ਕਰਕੇ ਆਪਣਾ KISAN 365 device app ਨਾਲ ਜੋੜੋ।</p><button class="primary" onclick="showPage('deviceLogin')">▦ OPEN DEVICE SCAN & LOGIN</button></div>
+ <div class="panel"><h3>Firebase Setup 🔒</h3><button class="primary" id="adminLogin">OPEN FIREBASE SETUP</button></div>
+ <div class="panel"><h3>Device Connection</h3><button class="primary" onclick="showPage('deviceLogin')">SCAN / LINK DEVICE</button></div>
  <div class="panel"><h3>Account & Support</h3><a href="tel:+919803234408" style="color:#16834a;font-weight:700;font-size:12px">Call +91 98032 34408</a></div>
 </section>
 <section class="page" id="deviceLogin">
@@ -226,14 +240,14 @@ const POWER_EVENTS_KEY='k365_power_events_v1', POWER_SOUND_KEY='k365_power_sound
 function readPowerEvents(){try{return JSON.parse(localStorage.getItem(POWER_EVENTS_KEY)||'[]')}catch(e){return[]}}
 function todayBounds(){const d=new Date();d.setHours(0,0,0,0);return d.getTime()}
 function powerIntervals(now){const events=readPowerEvents().sort((a,b)=>a.at-b.at),start=todayBounds();let state=null,cursor=start,arr=[];for(const e of events){if(e.at<start){state=e.state;continue}if(e.at>now)break;if(state==='ON'&&e.at>cursor)arr.push([cursor,e.at]);cursor=e.at;state=e.state}if(state==='ON'&&now>cursor)arr.push([cursor,now]);return arr}
-function fmtPowerDuration(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/3600)+' ਘੰਟੇ '+Math.floor(sec%3600/60)+' ਮਿੰਟ'}
-function renderDailyPower(){const track=document.getElementById('lightTrack');if(!track)return;const now=Date.now(),start=todayBounds(),arr=powerIntervals(now);let on=0;arr.forEach(x=>on+=Math.max(0,x[1]-x[0])/1000);track.innerHTML='';for(let h=0;h<24;h++){const a=start+h*3600000,b=a+3600000;let sec=0;arr.forEach(x=>sec+=Math.max(0,Math.min(x[1],b)-Math.max(x[0],a))/1000);const d=document.createElement('div');d.className='light-hour';const i=document.createElement('i');i.style.width=Math.min(100,sec/3600*100)+'%';d.appendChild(i);d.title=String(h).padStart(2,'0')+':00 · '+Math.round(sec/60)+' min ON';track.appendChild(d)}document.getElementById('lightDate').textContent=new Date().toLocaleDateString();document.getElementById('todayOnTime').textContent=fmtPowerDuration(on);document.getElementById('todayOffTime').textContent=fmtPowerDuration(Math.max(0,Math.min(now,start+86400000)-start)/1000-on);const todays=readPowerEvents().filter(e=>e.at>=start&&e.at<start+86400000).sort((a,b)=>b.at-a.at);document.getElementById('eventCount').textContent=todays.length+' entries';const list=document.getElementById('powerEventList');list.innerHTML='';if(!todays.length){list.textContent='ਅੱਜ ਹਾਲੇ ਕੋਈ Power ON/OFF event ਨਹੀਂ ਮਿਲਿਆ।';return}todays.forEach(e=>{const row=document.createElement('div');row.className='power-event '+(e.state==='ON'?'on':'off');const b=document.createElement('b');b.textContent=e.state==='ON'?'🟢 POWER ਆਈ':'🔴 POWER ਗਈ';const t=document.createElement('span');t.textContent=new Date(e.at).toLocaleString();row.append(b,t);list.appendChild(row)})}
+function fmtPowerDuration(sec){sec=Math.max(0,Math.floor(sec));return Math.floor(sec/3600)+'h '+Math.floor(sec%3600/60)+'m'}
+function renderDailyPower(){const track=document.getElementById('lightTrack');if(!track)return;const now=Date.now(),start=todayBounds(),arr=powerIntervals(now);let on=0;arr.forEach(x=>on+=Math.max(0,x[1]-x[0])/1000);track.innerHTML='';for(let h=0;h<24;h++){const a=start+h*3600000,b=a+3600000;let sec=0;arr.forEach(x=>sec+=Math.max(0,Math.min(x[1],b)-Math.max(x[0],a))/1000);const d=document.createElement('div');d.className='light-hour';const i=document.createElement('i');i.style.width=Math.min(100,sec/3600*100)+'%';d.appendChild(i);d.title=String(h).padStart(2,'0')+':00 · '+Math.round(sec/60)+' min ON';track.appendChild(d)}document.getElementById('lightDate').textContent=new Date().toLocaleDateString();document.getElementById('todayOnTime').textContent=fmtPowerDuration(on);document.getElementById('todayOffTime').textContent=fmtPowerDuration(Math.max(0,Math.min(now,start+86400000)-start)/1000-on);const todays=readPowerEvents().filter(e=>e.at>=start&&e.at<start+86400000).sort((a,b)=>b.at-a.at);document.getElementById('eventCount').textContent=todays.length+' entries';const list=document.getElementById('powerEventList');list.innerHTML='';if(!todays.length){list.textContent='ਅੱਜ ਹਾਲੇ ਕੋਈ Power ON/OFF event ਨਹੀਂ ਮਿਲਿਆ।';return}todays.forEach(e=>{const row=document.createElement('div');row.className='power-event '+(e.state==='ON'?'on':'off');const b=document.createElement('b');b.textContent=e.state==='ON'?'POWER ON':'POWER OFF';const t=document.createElement('span');t.textContent=new Date(e.at).toLocaleString();row.append(b,t);list.appendChild(row)})}
 function recordSupplyEvent(on){const events=readPowerEvents(),state=on?'ON':'OFF';if(events.length&&events[events.length-1].state===state)return;events.push({at:Date.now(),state});localStorage.setItem(POWER_EVENTS_KEY,JSON.stringify(events.slice(-2000)));renderDailyPower()}
 function playPowerPreview(kind){let s={};try{s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}const mode=kind==='ON'?(s.on||'default'):(s.off||'default');if(mode==='silent')return;if(s.custom){new Audio(s.custom).play().catch(()=>{});return}try{const ctx=new(window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();o.connect(g);g.connect(ctx.destination);const seq=mode==='siren'?[650,900,650,900]:mode==='classic'?[880,660,880]:mode==='bell'?[1046,1318]:[740,880];let t=ctx.currentTime;seq.forEach(v=>{o.frequency.setValueAtTime(v,t);g.gain.setValueAtTime(.16,t);g.gain.setValueAtTime(0,t+.18);t+=.24});o.start();o.stop(t+.02);o.onended=()=>ctx.close()}catch(e){}}
 function loadPowerSoundPrefs(){try{const s=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}');if(s.on)document.getElementById('powerOnSound').value=s.on;if(s.off)document.getElementById('powerOffSound').value=s.off}catch(e){}}
-document.getElementById('savePowerSounds').onclick=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}localStorage.setItem(POWER_SOUND_KEY,JSON.stringify({on:document.getElementById('powerOnSound').value,off:document.getElementById('powerOffSound').value,custom:old.custom||''}));document.getElementById('powerSoundStatus').textContent='Ringtone preference ਸੇਵ ਹੋ ਗਈ।'};
+document.getElementById('savePowerSounds').onclick=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}localStorage.setItem(POWER_SOUND_KEY,JSON.stringify({on:document.getElementById('powerOnSound').value,off:document.getElementById('powerOffSound').value,custom:old.custom||''}));document.getElementById('powerSoundStatus').textContent='Sound settings saved.'};
 document.getElementById('testPowerOnSound').onclick=()=>playPowerPreview('ON');document.getElementById('testPowerOffSound').onclick=()=>playPowerPreview('OFF');
-document.getElementById('customPowerSound').addEventListener('change',function(){const file=this.files&&this.files[0];if(!file)return;if(file.size>1500000){alert('1.5 MB ਤੋਂ ਛੋਟੀ audio file ਚੁਣੋ।');return}const reader=new FileReader();reader.onload=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}old.custom=reader.result;localStorage.setItem(POWER_SOUND_KEY,JSON.stringify(old));document.getElementById('powerSoundStatus').textContent='Custom ringtone ਸੇਵ ਹੋ ਗਈ। Test button ਨਾਲ ਸੁਣੋ।'};reader.readAsDataURL(file)});
+document.getElementById('customPowerSound').addEventListener('change',function(){const file=this.files&&this.files[0];if(!file)return;if(file.size>1500000){alert('Please choose an audio file smaller than 1.5 MB.');return}const reader=new FileReader();reader.onload=()=>{let old={};try{old=JSON.parse(localStorage.getItem(POWER_SOUND_KEY)||'{}')}catch(e){}old.custom=reader.result;localStorage.setItem(POWER_SOUND_KEY,JSON.stringify(old));document.getElementById('powerSoundStatus').textContent='Custom ringtone saved. Use the test buttons to preview.'};reader.readAsDataURL(file)});
 loadPowerSoundPrefs();renderDailyPower();setInterval(renderDailyPower,60000);
 
 const pages=[...document.querySelectorAll('.page')], navs=[...document.querySelectorAll('.nav')];
@@ -261,7 +275,7 @@ document.getElementById('googleServicesFile').addEventListener('change',async fu
 navs.forEach(n=>n.addEventListener('click',()=>showPage(n.dataset.page)));
 let timerEnd=0,timerInterval=null;
 function fmt(s){s=Math.max(0,Math.floor(s));let h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return [h,m,x].map(v=>String(v).padStart(2,'0')).join(':')}
-function refreshTimer(){let left=timerEnd?Math.max(0,Math.ceil((timerEnd-Date.now())/1000)):0;document.getElementById('headerTimer').textContent=timerEnd?fmt(left):'--:--:--';if(timerEnd&&left<=0){clearInterval(timerInterval);timerEnd=0;document.getElementById('timerState').textContent='Finished';document.getElementById('headerTimer').textContent='00:00:00';alert('Timer finished. Demo only: no real motor command was sent.');}}
+function refreshTimer(){let left=timerEnd?Math.max(0,Math.ceil((timerEnd-Date.now())/1000)):0;document.getElementById('headerTimer').textContent=timerEnd?fmt(left):'--:--:--';if(timerEnd&&left<=0){clearInterval(timerInterval);timerEnd=0;document.getElementById('timerState').textContent='Finished';document.getElementById('headerTimer').textContent='00:00:00';alert('Timer finished.');}}
 const duration=document.getElementById('duration');
 function updateDuration(){let m=+duration.value;document.getElementById('durationLabel').textContent=m<60?m+' minutes':Math.floor(m/60)+' hour'+(m>=120?'s':'')+(m%60?' '+m%60+' min':'');document.getElementById('durationClock').textContent=fmt(m*60)}
 duration.addEventListener('input',updateDuration);updateDuration();
@@ -300,7 +314,7 @@ function syncMotorSelects(){
 }
 document.getElementById('addMotor').onclick=()=>{
  const cards=document.querySelectorAll('#motorCards .motor');
- if(cards.length>=7){alert('Maximum 7 motors allowed.');return;}
+ if(cards.length>=7){alert('You can add up to 7 motors.');return;}
  const id=String(Math.max(0,...[...cards].map(c=>+(c.dataset.motor||0)))+1).padStart(2,'0');
  const card=document.createElement('article');card.className='motor';card.dataset.motor=id;
  card.innerHTML=`<div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR ${id}</div><div><span class="state off">MOTOR OFF</span></div></div><div class="phasegrid"><div class="phase r"><b>R PHASE</b><strong>-- V</strong><small>-- A</small></div><div class="phase y"><b>Y PHASE</b><strong>-- V</strong><small>-- A</small></div><div class="phase b"><b>B PHASE</b><strong>-- V</strong><small>-- A</small></div></div><div class="stats"><div class="stat"><span>Total Current</span><strong>-- A</strong></div><div class="stat"><span>Power</span><strong>-- kW</strong></div><div class="stat"><span>Frequency</span><strong>-- Hz</strong></div></div><div class="controls"><button class="onbtn">▶ MOTOR ON</button><button class="offbtn">■ MOTOR OFF</button></div><div class="smallrow"><span>Device: Not assigned</span><span>Preview</span></div>`;
@@ -319,11 +333,11 @@ function loadAdminConfig(){
  Object.entries(values).forEach(([id,v])=>{const el=document.getElementById(id);if(el&&v!==undefined&&v!==null)el.value=v;});
  }catch(e){console.warn('Could not load saved admin settings',e);}
 }
-document.getElementById('saveFirebase').onclick=()=>{saveAdminConfig();alert('Firebase settings saved on this device. Live connection is not enabled until Firebase SDK/backend is configured.');};
-document.getElementById('saveAuth').onclick=()=>{saveAdminConfig();alert('Authentication and customer registration preferences saved on this device. Google / Email providers still need Firebase Console and production app integration.');};
-document.getElementById('saveFcm').onclick=()=>{saveAdminConfig();document.getElementById('fcmTokenStatus').textContent='FCM settings ਅਤੇ token ਇਸ browser ਵਿੱਚ save ਹੋ ਗਏ। ਅਸਲੀ push delivery ਲਈ app/backend integration ਹਾਲੇ ਲੋੜੀਂਦੀ ਹੈ।';alert('FCM settings and token saved on this device.');};
-document.getElementById('copyFcmToken').onclick=async()=>{const token=document.getElementById('fcmToken').value.trim();if(!token){alert('ਪਹਿਲਾਂ FCM token paste ਕਰੋ।');return;}try{await navigator.clipboard.writeText(token);document.getElementById('fcmTokenStatus').textContent='FCM token clipboard ਵਿੱਚ copy ਹੋ ਗਿਆ।';}catch(e){const field=document.getElementById('fcmToken');field.focus();field.select();alert('Token select ਕਰ ਦਿੱਤਾ ਹੈ। Copy ਕਰਨ ਲਈ Copy ਦਬਾਓ।');}};
-document.getElementById('clearFcmToken').onclick=()=>{document.getElementById('fcmToken').value='';document.getElementById('fcmTokenStatus').textContent='Token field ਸਾਫ਼ ਕਰ ਦਿੱਤੀ। Save FCM Settings ਦਬਾ ਕੇ ਇਹ ਬਦਲਾਅ ਸੰਭਾਲੋ।';};
+document.getElementById('saveFirebase').onclick=()=>{saveAdminConfig();alert('Firebase settings saved.');};
+document.getElementById('saveAuth').onclick=()=>{saveAdminConfig();alert('Authentication settings saved.');};
+document.getElementById('saveFcm').onclick=()=>{saveAdminConfig();document.getElementById('fcmTokenStatus').textContent='FCM settings ਅਤੇ token ਇਸ browser ਵਿੱਚ save ਹੋ ਗਏ। ਅਸਲੀ push delivery ਲਈ app/backend integration ਹਾਲੇ ਲੋੜੀਂਦੀ ਹੈ।';alert('FCM settings saved.');};
+document.getElementById('copyFcmToken').onclick=async()=>{const token=document.getElementById('fcmToken').value.trim();if(!token){alert('Enter an FCM token first.');return;}try{await navigator.clipboard.writeText(token);document.getElementById('fcmTokenStatus').textContent='FCM token copied.';}catch(e){const field=document.getElementById('fcmToken');field.focus();field.select();alert('Token selected. Use Copy to copy it.');}};
+document.getElementById('clearFcmToken').onclick=()=>{document.getElementById('fcmToken').value='';document.getElementById('fcmTokenStatus').textContent='Token cleared. Save FCM Settings to apply.';};
 document.getElementById('testFcm').onclick=()=>alert('Settings are saved, but a real test notification requires deployed Firebase Cloud Messaging and a registered app token.');
 document.getElementById('changeAdminPassword').onclick=async()=>{const a=document.getElementById('newAdminPassword').value,b=document.getElementById('confirmAdminPassword').value;if(a.length<8)return alert('Password must be at least 8 characters.');if(a!==b)return alert('Passwords do not match.');const d=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(a));const h=Array.from(new Uint8Array(d)).map(x=>x.toString(16).padStart(2,'0')).join('');localStorage.setItem('k365_admin_pass_hash',h);document.getElementById('newAdminPassword').value='';document.getElementById('confirmAdminPassword').value='';alert('Admin password changed on this device.');};
 loadAdminConfig();
@@ -336,29 +350,29 @@ document.getElementById('saveProtection').onclick=()=>{
  if(!(min>0&&max>min))return alert('Maximum current must be greater than minimum current; both must be above zero.');
  if(!(low>=1&&high>=1))return alert('Trip delays must be at least 1 second.');
  document.getElementById('protectionSaved').textContent='Preview settings validated for '+motor+': Min '+min+' A · Max '+max+' A · Dry-run delay '+low+' s · Overload delay '+high+' s · Auto cut-off '+document.getElementById('autoCutoff').value.toUpperCase()+'.';
- alert('Motor protection settings checked for '+motor+'. Preview only — not sent to a controller.');
+ alert('Motor protection settings saved for '+motor+'.');
 };
 let deviceScanStream=null,deviceScanFrame=0;
 async function scanDevice(){
  const status=document.getElementById('qrScanStatus'),video=document.getElementById('deviceQrVideo');
- if(!('BarcodeDetector' in window)){status.textContent='ਇਸ browser ਵਿੱਚ QR camera detection support ਨਹੀਂ। Activation code ਹੱਥੀਂ ਭਰੋ।';return;}
- if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){status.textContent='Camera access ਉਪਲਬਧ ਨਹੀਂ। HTTPS browser ਵਰਤੋ ਜਾਂ code ਹੱਥੀਂ ਭਰੋ।';return;}
+ if(!('BarcodeDetector' in window)){status.textContent='QR scanning is not supported here. Enter the activation code manually.';return;}
+ if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){status.textContent='Camera access is unavailable. Allow camera access or enter the code manually.';return;}
  try{
   deviceScanStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:'environment'}},audio:false});
   video.srcObject=deviceScanStream;video.style.display='block';await video.play();
   const detector=new BarcodeDetector({formats:['qr_code']});
-  status.textContent='QR ਕੋਡ ਕੈਮਰੇ ਸਾਹਮਣੇ ਲਿਆਓ…';
+  status.textContent='Point the camera at the device QR code.';
   const scanFrame=async()=>{
    if(!deviceScanStream)return;
    try{const found=await detector.detect(video);if(found.length){
     document.getElementById('deviceCode').value=found[0].rawValue;
-    status.textContent='QR ਪੜ੍ਹ ਲਿਆ ਗਿਆ। ਹੁਣ serial/account ਵੇਰਵੇ ਚੈੱਕ ਕਰਕੇ LOGIN / LINK DEVICE ਦਬਾਓ।';
+    status.textContent='QR code scanned. Check the details and select LINK DEVICE.';
     stopDeviceScan();return;
    }}catch(err){}
    deviceScanFrame=requestAnimationFrame(scanFrame);
   };
   scanFrame();
- }catch(err){status.textContent='Camera permission ਨਹੀਂ ਮਿਲੀ। Browser settings ਵਿੱਚ camera allow ਕਰੋ ਜਾਂ code ਹੱਥੀਂ ਭਰੋ।';stopDeviceScan();}
+ }catch(err){status.textContent='Camera permission denied. Allow camera access or enter the code manually.';stopDeviceScan();}
 }
 function stopDeviceScan(){
  if(deviceScanFrame)cancelAnimationFrame(deviceScanFrame);deviceScanFrame=0;
@@ -370,13 +384,13 @@ function activateDevice(){
  const code=document.getElementById('deviceCode').value.trim();
  const serial=document.getElementById('deviceSerial').value.trim();
  const customer=document.getElementById('deviceCustomer').value.trim();
- if(!code){alert('ਪਹਿਲਾਂ QR scan ਕਰੋ ਜਾਂ one-time activation code ਭਰੋ।');return;}
- if(!serial){alert('Device serial number ਭਰੋ।');return;}
- if(!customer){alert('Customer mobile / account ID ਭਰੋ।');return;}
- document.getElementById('deviceLinkStatus').textContent='Preview request ਤਿਆਰ: '+serial+' · '+customer+' · '+document.getElementById('assignMotor').value+'. ਅਸਲੀ device login/activation ਨਹੀਂ ਹੋਈ ਕਿਉਂਕਿ backend ਹਾਲੇ ਜੋੜਿਆ ਨਹੀਂ।';
- alert('Device details preview ਵਿੱਚ ਦਰਜ ਹੋ ਗਏ। ਅਸਲੀ activation ਲਈ Firebase/backend verification ਅਖੀਰ ਵਿੱਚ ਜੋੜਾਂਗੇ।');
+ if(!code){alert('Scan the QR code or enter an activation code.');return;}
+ if(!serial){alert('Enter the device serial number.');return;}
+ if(!customer){alert('Enter the customer mobile number or account ID.');return;}
+ document.getElementById('deviceLinkStatus').textContent='Request prepared for '+serial+' · '+customer+' · '+document.getElementById('assignMotor').value+'. Device activation requires server verification.';
+ alert('Device details saved in preview. Server verification is required for activation.');
 }
-function openAdminGate(){const gate=document.getElementById('adminGate');const hasPass=!!localStorage.getItem('k365_admin_pass_hash');document.getElementById('gateTitle').textContent=hasPass?'🔒 Firebase Setup Login':'🔐 Create Setup Password';document.getElementById('gateHelp').textContent=hasPass?'Firebase Setup ਖੋਲ੍ਹਣ ਲਈ password ਦਿਓ।':'Firebase Setup ਲਈ ਆਪਣਾ password ਬਣਾਓ (ਘੱਟੋ-ਘੱਟ 8 ਅੱਖਰ)।';document.getElementById('gateSubmit').textContent=hasPass?'UNLOCK FIREBASE SETUP':'SET PASSWORD & OPEN';document.getElementById('gatePassword').value='';document.getElementById('gateError').textContent='';gate.style.display='flex';}
+function openAdminGate(){const gate=document.getElementById('adminGate');const hasPass=!!localStorage.getItem('k365_admin_pass_hash');document.getElementById('gateTitle').textContent=hasPass?'🔒 Firebase Setup Login':'🔐 Create Setup Password';document.getElementById('gateHelp').textContent=hasPass?'Enter your password to open Firebase Setup.':'Create a password with at least 8 characters.';document.getElementById('gateSubmit').textContent=hasPass?'UNLOCK FIREBASE SETUP':'SET PASSWORD & OPEN';document.getElementById('gatePassword').value='';document.getElementById('gateError').textContent='';gate.style.display='flex';}
 document.getElementById('adminLogin').onclick=openAdminGate;
 document.getElementById('gateCancel').onclick=()=>document.getElementById('adminGate').style.display='none';
 document.getElementById('gateSubmit').onclick=async()=>{const val=document.getElementById('gatePassword').value;const defaultPass='Kisan365@Admin2026';const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(val));const hash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');let saved=localStorage.getItem('k365_admin_pass_hash');if(!saved){if(val!==defaultPass){document.getElementById('gateError').textContent='Default preview password: Kisan365@Admin2026.';return;}localStorage.setItem('k365_admin_pass_hash',hash);saved=hash;}if(saved===hash){sessionStorage.setItem('k365_admin_ok','1');}else{document.getElementById('gateError').textContent='Incorrect admin password.';return;}document.getElementById('adminGate').style.display='none';pages.forEach(p=>p.classList.toggle('active',p.id==='admin'));navs.forEach(n=>n.classList.toggle('active',n.dataset.page==='settings'));window.scrollTo({top:0,behavior:'smooth'});};

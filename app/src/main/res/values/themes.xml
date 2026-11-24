@@ -1,12 +1,15 @@
-
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Theme.KISAN365" parent="android:style/Theme.Material.Light.NoActionBar">
         <item name="android:fontFamily">sans</item>
-        <item name="android:colorAccent">#228B22</item>
+        <item name="android:colorAccent">#16834A</item>
         <item name="android:statusBarColor">#155724</item>
         <item name="android:navigationBarColor">#155724</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowBackground">#F4F7F2</item>
+        <item name="android:windowBackground">#FFFFFF</item>
+    </style>
+
+    <style name="Theme.KISAN365.Splash" parent="Theme.KISAN365">
+        <item name="android:windowBackground">#FFFFFF</item>
     </style>
 </resources>
-

@@ -117,6 +117,8 @@ main{padding:10px 12px 18px}
   <div id="motorManagerItems"></div><button class="addbtn" id="addMotor">＋ ADD NEW MOTOR</button>
  </div>
  <div class="panel" id="motorProtection">
+  <button class="primary" id="toggleMotorProtection" type="button" aria-expanded="false">MOTOR PROTECTION SETTINGS ▾</button>
+  <div id="motorProtectionBody" hidden>
   <h3>Motor Protection</h3>
   <p class="sub"></p>
   <label class="field"><span>Select motor</span><select id="protectionMotor"><option value="">Select motor</option></select></label>
@@ -132,6 +134,7 @@ main{padding:10px 12px 18px}
   <button class="primary" id="saveProtection">SAVE MOTOR PROTECTION</button>
   
   <div id="protectionSaved" class="sub" style="margin-top:8px"></div>
+  </div>
  </div>
 
  <div class="panel" id="powerSoundSettings"><h3>Notification Sounds</h3>
@@ -381,6 +384,14 @@ document.getElementById('saveProtection').onclick=()=>{
  document.getElementById('protectionSaved').textContent='Preview settings validated for '+motor+': Start delay '+startDelay+' s · Min '+min+' A · Max '+max+' A · Dry-run delay '+low+' s · Overload delay '+high+' s · Auto cut-off '+document.getElementById('autoCutoff').value.toUpperCase()+'.';
  alert('Motor protection settings saved for '+motor+'.');
 };
+const protectionToggle=document.getElementById('toggleMotorProtection');
+const protectionBody=document.getElementById('motorProtectionBody');
+protectionToggle.addEventListener('click',()=>{
+ const open=protectionBody.hidden;
+ protectionBody.hidden=!open;
+ protectionToggle.setAttribute('aria-expanded',String(open));
+ protectionToggle.textContent=open?'MOTOR PROTECTION SETTINGS ▴':'MOTOR PROTECTION SETTINGS ▾';
+});
 document.getElementById('protectionMotor').addEventListener('change',()=>{
  let saved={};try{saved=JSON.parse(localStorage.getItem('k365_motor_start_delays_v1')||'{}')}catch(e){}
  const motor=document.getElementById('protectionMotor').value;

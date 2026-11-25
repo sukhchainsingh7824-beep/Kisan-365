@@ -123,6 +123,9 @@ main{padding:10px 12px 18px}
   
   <label class="field"><span>Minimum Current (A)</span><input id="minAmp" type="number" min="0" step="0.1" placeholder="Enter calibrated minimum A"></label>
   <label class="field"><span>Maximum Current (A)</span><input id="maxAmp" type="number" min="0" step="0.1" placeholder="Enter motor rated limit A"></label>
+  <label class="field"><span>Motor Start Delay (seconds)</span><input id="motorStartDelay" type="number" min="0" max="300" step="1" value="5"></label>
+  <div class="sub" id="motorStartCountdown" aria-live="polite">Default start delay: 5 seconds</div>
+  <button class="secondary" id="cancelMotorStart" type="button" style="width:100%;margin-top:6px">CANCEL MOTOR START</button>
   <label class="field"><span>Dry-Run Delay (seconds)</span><input id="lowDelay" type="number" min="1" max="120" value="8"></label>
   <label class="field"><span>Overload Delay (seconds)</span><input id="highDelay" type="number" min="1" max="120" value="3"></label>
   <label class="field"><span>Automatic motor cut-off</span><select id="autoCutoff"><option value="on">Enabled</option><option value="off">Disabled</option></select></label>
@@ -283,7 +286,28 @@ duration.addEventListener('input',updateDuration);updateDuration();
 document.getElementById('startTimer').onclick=()=>{timerEnd=Date.now()+(+duration.value)*60000;document.getElementById('timerState').textContent='Running';clearInterval(timerInterval);refreshTimer();timerInterval=setInterval(refreshTimer,1000);showPage('home')};
 function cancelTimer(){clearInterval(timerInterval);timerEnd=0;document.getElementById('timerState').textContent='Cancelled';document.getElementById('headerTimer').textContent='--:--:--'}
 document.getElementById('cancelTimer').onclick=cancelTimer;document.getElementById('headerCancel').onclick=()=>{if(timerEnd)cancelTimer()};
-function motorAction(btn,on){const card=btn.closest('.motor');card.classList.toggle('running',on);const state=card.querySelector('.state');state.textContent=on?'MOTOR RUNNING':'MOTOR OFF';state.classList.toggle('off',!on);card.querySelector('.gear').style.color=on?'#16834a':'#91a096';}
+let motorStartInterval=null,motorStartTimeout=null,motorStartEndsAt=0,motorStartCard=null;
+function cancelMotorStart(){
+ if(motorStartInterval)clearInterval(motorStartInterval);
+ if(motorStartTimeout)clearTimeout(motorStartTimeout);
+ motorStartInterval=null;motorStartTimeout=null;motorStartEndsAt=0;
+ if(motorStartCard){const state=motorStartCard.querySelector('.state');if(state){state.textContent='MOTOR OFF';state.classList.add('off');}}
+ motorStartCard=null;
+ const status=document.getElementById('motorStartCountdown');if(status)status.textContent='Motor start cancelled.';
+}
+function startMotorCard(card){card.classList.add('running');const state=card.querySelector('.state');state.textContent='MOTOR RUNNING';state.classList.remove('off');card.querySelector('.gear').style.color='#16834a';}
+function motorAction(btn,on){
+ const card=btn.closest('.motor');if(!card)return;
+ if(!on){if(motorStartCard===card)cancelMotorStart();card.classList.remove('running');const state=card.querySelector('.state');state.textContent='MOTOR OFF';state.classList.add('off');card.querySelector('.gear').style.color='#91a096';return;}
+ if(motorStartTimeout)cancelMotorStart();
+ const delay=Math.max(0,Math.min(300,Number(document.getElementById('motorStartDelay')?.value||5)));
+ if(delay===0){startMotorCard(card);return;}
+ motorStartCard=card;motorStartEndsAt=Date.now()+delay*1000;
+ const state=card.querySelector('.state');state.textContent='STARTING IN '+delay+'s';state.classList.add('off');
+ const status=document.getElementById('motorStartCountdown');
+ const tick=()=>{const left=Math.max(0,Math.ceil((motorStartEndsAt-Date.now())/1000));if(status)status.textContent='Motor starts in '+left+' seconds';if(left<=0){clearInterval(motorStartInterval);motorStartInterval=null;motorStartTimeout=null;motorStartCard=null;startMotorCard(card);if(status)status.textContent='Motor start delay completed.';}};
+ motorStartInterval=setInterval(tick,200);motorStartTimeout=setTimeout(tick,delay*1000);tick();
+}
 function deleteMotorCard(btn){
  const card=btn.closest('.motor');if(!card)return;
  if(!confirm('Delete this motor?'))return;
@@ -346,13 +370,28 @@ document.getElementById('saveProtection').onclick=()=>{
  const motor=document.getElementById('protectionMotor').value;
  const min=Number(document.getElementById('minAmp').value),max=Number(document.getElementById('maxAmp').value);
  const low=Number(document.getElementById('lowDelay').value),high=Number(document.getElementById('highDelay').value);
+ const startDelay=Number(document.getElementById('motorStartDelay').value);
  if(!motor)return alert('Please select a motor.');
  if(document.getElementById('minAmp').value===''||document.getElementById('maxAmp').value==='')return alert('Enter both minimum and maximum ampere limits.');
  if(!(min>0&&max>min))return alert('Maximum current must be greater than minimum current; both must be above zero.');
  if(!(low>=1&&high>=1))return alert('Trip delays must be at least 1 second.');
- document.getElementById('protectionSaved').textContent='Preview settings validated for '+motor+': Min '+min+' A · Max '+max+' A · Dry-run delay '+low+' s · Overload delay '+high+' s · Auto cut-off '+document.getElementById('autoCutoff').value.toUpperCase()+'.';
+ if(!Number.isInteger(startDelay)||startDelay<0||startDelay>300)return alert('Motor start delay must be 0 to 300 whole seconds.');
+ let savedStartDelays={};try{savedStartDelays=JSON.parse(localStorage.getItem('k365_motor_start_delays_v1')||'{}')}catch(e){}
+ savedStartDelays[motor]=startDelay;localStorage.setItem('k365_motor_start_delays_v1',JSON.stringify(savedStartDelays));
+ document.getElementById('protectionSaved').textContent='Preview settings validated for '+motor+': Start delay '+startDelay+' s · Min '+min+' A · Max '+max+' A · Dry-run delay '+low+' s · Overload delay '+high+' s · Auto cut-off '+document.getElementById('autoCutoff').value.toUpperCase()+'.';
  alert('Motor protection settings saved for '+motor+'.');
 };
+document.getElementById('protectionMotor').addEventListener('change',()=>{
+ let saved={};try{saved=JSON.parse(localStorage.getItem('k365_motor_start_delays_v1')||'{}')}catch(e){}
+ const motor=document.getElementById('protectionMotor').value;
+ document.getElementById('motorStartDelay').value=Number.isInteger(saved[motor])?saved[motor]:5;
+ document.getElementById('motorStartCountdown').textContent='Default start delay: '+document.getElementById('motorStartDelay').value+' seconds';
+});
+document.getElementById('motorStartDelay').addEventListener('input',()=>{
+ document.getElementById('motorStartCountdown').textContent='Selected start delay: '+document.getElementById('motorStartDelay').value+' seconds';
+});
+document.getElementById('cancelMotorStart').onclick=cancelMotorStart;
+
 let deviceScanStream=null,deviceScanFrame=0;
 async function scanDevice(){
  const status=document.getElementById('qrScanStatus'),video=document.getElementById('deviceQrVideo');

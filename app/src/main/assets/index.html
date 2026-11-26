@@ -69,22 +69,22 @@ main{padding:10px 12px 18px}
 <section class="page active" id="home">
  <div class="head"><h2>Power Dashboard</h2><span class="sub">Live motor & supply monitoring</span></div>
  <div class="stats" style="margin-bottom:12px">
-  <div class="stat"><span>Device Status</span><strong id="dashDevice">ONLINE</strong></div>
-  <div class="stat"><span>Power Supply</span><strong id="dashSupply">ON</strong></div>
+  <div class="stat"><span>Device Status</span><strong id="dashDevice">OFFLINE</strong></div>
+  <div class="stat"><span>Power Supply</span><strong id="dashSupply">UNKNOWN</strong></div>
   <div class="stat"><span>Total Motors</span><strong id="homeMotorCount">1</strong></div>
  </div>
 
  <div id="motorCards">
   <article class="motor" data-motor="1">
-   <div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR 01 · MAIN PUMP</div><span class="state off">MOTOR OFF</span></div>
+   <div class="motorhead"><div class="motorname"><span class="gear">⚙</span> MOTOR 01 · MAIN PUMP</div><span class="state off">NOT CONNECTED</span></div>
    <div class="phasegrid">
-    <div class="phase r"><b>R PHASE</b><strong>231 V</strong><small>2.4 A</small></div>
-    <div class="phase y"><b>Y PHASE</b><strong>229 V</strong><small>2.3 A</small></div>
-    <div class="phase b"><b>B PHASE</b><strong>233 V</strong><small>2.5 A</small></div>
+    <div class="phase r"><b>R PHASE</b><strong>-- V</strong><small>-- A</small></div>
+    <div class="phase y"><b>Y PHASE</b><strong>-- V</strong><small>-- A</small></div>
+    <div class="phase b"><b>B PHASE</b><strong>-- V</strong><small>-- A</small></div>
    </div>
-   <div class="stats"><div class="stat"><span>Total Current</span><strong>2.4 A</strong></div><div class="stat"><span>Power</span><strong>1.55 kW</strong></div><div class="stat"><span>Frequency</span><strong>50 Hz</strong></div></div>
-   <div class="controls"><button class="onbtn" onclick="motorAction(this,true)">▶ MOTOR ON</button><button class="offbtn" onclick="motorAction(this,false)">■ MOTOR OFF</button></div>
-   <div class="smallrow"><span>Supply: Available</span><span>Power factor: 0.92</span></div>
+   <div class="stats"><div class="stat"><span>Total Current</span><strong>-- A</strong></div><div class="stat"><span>Power</span><strong>-- kW</strong></div><div class="stat"><span>Frequency</span><strong>-- Hz</strong></div></div>
+   <div class="controls"><button class="onbtn" id="motorOnButton" disabled>▶ MOTOR ON</button><button class="offbtn" id="motorOffButton" disabled>■ MOTOR OFF</button></div>
+   <div class="smallrow"><span id="motorSupplyInfo">Supply: Unknown</span><span>Power factor: --</span></div>
   </article>
  </div>
  <div class="light-panel" id="dailyLightPanel">
@@ -102,14 +102,12 @@ main{padding:10px 12px 18px}
   <label class="field"><span>Duration: <b id="durationLabel">1 hour</b></span><input type="range" min="5" max="720" step="5" value="60" id="duration"></label>
   <div class="stats"><div class="stat"><span>Selected time</span><strong id="durationClock">01:00:00</strong></div><div class="stat"><span>Timer state</span><strong id="timerState">Not set</strong></div><div class="stat"><span>Expiry action</span><strong>MOTOR OFF</strong></div></div>
   <button class="primary" id="startTimer">START TIMER</button><button class="secondary" style="width:100%;margin-top:8px" id="cancelTimer">CANCEL TIMER</button>
-  <p class="note">Demo only: actual automatic OFF needs server-side timer, connected controller and device acknowledgement.</p>
+  <p class="note">Timer controls remain unavailable until an ESP8266 device is linked and acknowledges commands.</p>
  </div>
 </section>
 <section class="page" id="alerts">
  <div class="head"><h2>Alerts</h2><span class="sub">Recent notifications</span></div>
- <div class="panel"><h3>Power Supply ON</h3><div class="sub">Today · 06:15 AM · Electricity detected; motor was OFF</div></div>
- <div class="panel"><h3>Motor OFF</h3><div class="sub">Today · 09:40 AM · Motor 01 stopped</div></div>
- <div class="panel"><h3>Power Supply OFF</h3><div class="sub">Yesterday · 07:10 PM · Supply disconnected</div></div>
+ <div class="panel"><h3>No device alerts</h3><div class="sub">Connect an ESP8266 device to receive real power and motor alerts.</div></div>
 </section>
 <section class="page" id="settings">
  <div class="head"><h2>Settings</h2></div>
@@ -445,6 +443,21 @@ function openAdminGate(){const gate=document.getElementById('adminGate');const h
 document.getElementById('adminLogin').onclick=openAdminGate;
 document.getElementById('gateCancel').onclick=()=>document.getElementById('adminGate').style.display='none';
 document.getElementById('gateSubmit').onclick=async()=>{const val=document.getElementById('gatePassword').value;const defaultPass='Kisan365@Admin2026';const digest=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(val));const hash=Array.from(new Uint8Array(digest)).map(b=>b.toString(16).padStart(2,'0')).join('');let saved=localStorage.getItem('k365_admin_pass_hash');if(!saved){if(val!==defaultPass){document.getElementById('gateError').textContent='Default preview password: Kisan365@Admin2026.';return;}localStorage.setItem('k365_admin_pass_hash',hash);saved=hash;}if(saved===hash){sessionStorage.setItem('k365_admin_ok','1');}else{document.getElementById('gateError').textContent='Incorrect admin password.';return;}document.getElementById('adminGate').style.display='none';pages.forEach(p=>p.classList.toggle('active',p.id==='admin'));navs.forEach(n=>n.classList.toggle('active',n.dataset.page==='settings'));window.scrollTo({top:0,behavior:'smooth'});};
+
+// Safe no-device state: no sample telemetry, fake online status, or unverified motor control.
+(function enforceUnlinkedDeviceState(){
+ const d=document.getElementById('dashDevice');if(d)d.textContent='OFFLINE';
+ const s=document.getElementById('dashSupply');if(s)s.textContent='UNKNOWN';
+ ['motorOnButton','motorOffButton'].forEach(id=>{const b=document.getElementById(id);if(b)b.disabled=true;});
+ document.querySelectorAll('#motorCards .phase strong,#motorCards .phase small').forEach(el=>el.textContent=el.tagName==='STRONG'?'-- V':'-- A');
+ const stats=document.querySelectorAll('#motorCards .stats .stat strong');stats.forEach((el,i)=>el.textContent=i===2?'-- Hz':i===1?'-- kW':'-- A');
+ const state=document.querySelector('#motorCards .state');if(state)state.textContent='NOT CONNECTED';
+ const info=document.getElementById('motorSupplyInfo');if(info)info.textContent='Supply: Unknown';
+ const track=document.getElementById('lightTrack');if(track)track.innerHTML='';
+ ['todayOnTime','todayOffTime'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='--';});
+ const count=document.getElementById('eventCount');if(count)count.textContent='0 entries';
+ const list=document.getElementById('powerEventList');if(list)list.textContent='Connect a device to start recording power history.';
+})();
 syncMotorSelects();
 if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));}
 </script></body></html>

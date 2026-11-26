@@ -72,7 +72,7 @@ class DashboardActivity : Activity() {
         val scroll = ScrollView(this)
         val body = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(14), dp(12), dp(14), dp(90))
+            setPadding(dp(14), dp(10), dp(14), dp(18))
         }
         val hero = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
@@ -174,11 +174,11 @@ class DashboardActivity : Activity() {
         root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
         val nav = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER
-            setPadding(0, dp(8), 0, dp(8)); setBackgroundColor(Color.WHITE)
+            setPadding(0, dp(7), 0, dp(28)); minimumHeight = dp(66); setBackgroundColor(Color.WHITE)
         }
         listOf("⌂\nHome", "◷\nTimer", "◉\nAlerts", "⚙\nSettings").forEach { label ->
             nav.addView(TextView(this).apply {
-                text = label; gravity = Gravity.CENTER; textSize = 12f; setTextColor(green)
+                text = label; gravity = Gravity.CENTER; textSize = 13f; setTextColor(green); minHeight = dp(48); isClickable = true
                 setOnClickListener { if (label.contains("Settings")) showSettingsInfo() else if (label.contains("Timer")) showTimerInfo() else if (label.contains("Alerts")) showAlertsInfo() }
             }, LinearLayout.LayoutParams(0, -2, 1f))
         }

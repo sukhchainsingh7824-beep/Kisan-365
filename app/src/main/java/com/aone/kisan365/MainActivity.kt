@@ -76,7 +76,7 @@ class DashboardActivity : Activity() {
         }
         val hero = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(dp(18), dp(22), dp(18), dp(18))
+            setPadding(dp(18), dp(16), dp(18), dp(14))
             background = android.graphics.drawable.GradientDrawable(
                 android.graphics.drawable.GradientDrawable.Orientation.LEFT_RIGHT,
                 intArrayOf(darkGreen, green)
@@ -84,7 +84,7 @@ class DashboardActivity : Activity() {
         }
         hero.addView(text("🌾 KISAN 365", 24f, Color.WHITE, true))
         hero.addView(text("SMART MOTOR & POWER MONITOR", 12f, Color.WHITE))
-        addGap(hero, 14)
+        addGap(hero, 10)
         val topRow = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL }
         statusText = text("● DEVICE OFFLINE", 13f, Color.WHITE, true)
         supplyText = text("POWER UNKNOWN", 13f, Color.WHITE, true)
@@ -145,7 +145,10 @@ class DashboardActivity : Activity() {
         body.addView(phaseCard)
         addGap(body)
         val motorCard = card()
-        motorCard.addView(text("Motor 01 · Main Pump", 16f, ink, true))
+        val motorTitle = LinearLayout(this).apply { orientation = LinearLayout.HORIZONTAL; gravity = Gravity.CENTER_VERTICAL }
+        motorTitle.addView(text("⚙", 21f, green, true))
+        motorTitle.addView(text("  Motor 01 · Main Pump", 16f, ink, true))
+        motorCard.addView(motorTitle)
         addGap(motorCard, 5)
         motorText = text("MOTOR UNKNOWN", 14f, muted, true)
         motorCard.addView(motorText)

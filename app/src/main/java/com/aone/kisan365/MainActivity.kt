@@ -239,7 +239,7 @@ class DashboardActivity : Activity() {
                 rCurrent.text = "R: " + number("current/r") + " A"
                 yCurrent.text = "Y: " + number("current/y") + " A"
                 bCurrent.text = "B: " + number("current/b") + " A"
-                motorText.text = if (!online) "MOTOR UNKNOWN" else if (snapshot.child("motorOn").getValue(Boolean::class.java) == true) "MOTOR RUNNING" else "MOTOR OFF"
+                motorText.text = if (!online || !snapshot.child("motorOn").exists()) "MOTOR UNKNOWN" else if (snapshot.child("motorOn").getValue(Boolean::class.java) == true) "MOTOR RUNNING" else "MOTOR OFF"
                 if (!online) {
                     rVoltage.text = "-- V"; yVoltage.text = "-- V"; bVoltage.text = "-- V"
                     rCurrent.text = "R: -- A"; yCurrent.text = "Y: -- A"; bCurrent.text = "B: -- A"
@@ -254,13 +254,7 @@ class DashboardActivity : Activity() {
     }
 
     private fun sendMotorCommand(on: Boolean) {
-        if (!online || deviceRef == null) {
-            Toast.makeText(this, "Device offline. Motor command not sent.", Toast.LENGTH_LONG).show()
-            return
-        }
-        deviceRef!!.child("commands").child("motor01").setValue(on)
-            .addOnSuccessListener { Toast.makeText(this, if (on) "Motor ON command sent" else "Motor OFF command sent", Toast.LENGTH_SHORT).show() }
-            .addOnFailureListener { Toast.makeText(this, "Command failed: ${it.message}", Toast.LENGTH_LONG).show() }
+        Toast.makeText(this, "Motor control is not installed yet. Connect a protected contactor driver first.", Toast.LENGTH_LONG).show()
     }
 
     private fun showSettingsInfo() {
